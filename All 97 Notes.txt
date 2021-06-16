@@ -1,0 +1,5123 @@
+Introductory material
+
+ * Lectures should be listened to soon, if you’re listening to them already.
+   They’ll be up for one week, but may be taken down after that.
+   Take notes! You learn more that way.
+   Hint from D.E. Knuth: Think about what will be on the *next* slide
+     (if PowerPoint).  This can be productive in many ways.
+     Write down your thoughts (as well as copying lecture).
+
+ * The form of the midterm: not decided yet. Two hour midterm (nominal)
+     might be split into two one-hour pieces.
+   We’ll let you know by next week.  Open book, notes, Internet; but solo.
+
+ * Next homework will be published soon, about version control: (Git
+   in particular).
+
+ * Continue to think about project ideas.  Client-server application,
+     cell phone client + (AWS, laptop) server,
+     COVID-19 tracking (?),
+     ask for 1 - 2 page proposal (details in a few days)
+
+ * Group assignments - TAs will solicit proposals groups of 4 nominal.
+
+
+C-] as a way to exit the backtrace after an error.
+
+Scripting languages
+
+   shell (sh)    glue language - designed to hook other programs together
+                   little languages (grep, sed, awk, ...)
+           commands (cp, mv, ln, ls, cmp, ...)
+         reasonably static - 1970s, hasn’t changed much since 1990
+
+   Lisp          "oldest", designed for AI, use lots of other places
+             1950s - evolved more than almost any other language,
+           still evolving, lots more variants
+
+   Python        most popular scripting language now (machine learning)
+                   glue language (glues together C++/C module)
+           lower-level glue than sh
+
+   JavaScript    web applications, every browser
+
+Non-scripting languages
+
+   C++ / C       CS 31, 33 - traditional, low level "glorified assembler"
+                 close to machine, translated to machine code,
+         programs run at machine level
+
+   Java          interpreted -> compiled.  "Professional" - static type
+            checking, intended to be scalable to large apps.
+         JVM (Java Virtual Machine) - software platform for
+         running portable Java code.
+
+         Foo.java -> Foo.class -> Java interpeter (tuned for decades!)
+                     JVM code
+
+              The JVM platform is now a porting target!
+         Other languages now have compilers that generate .class files.
+
+What scripting languages have in common
+
+ + Easy to use, easy to learn
+ + Avoid bureaucratic hassle of C, C++, Java - learn in a day, not in a quarter!
+            ^^^^^
+ - efficiency
+ - reliability - runtime checking - bugs not found until production
+ + reliability - runtime checking in errors like subscript errors
+ - scaling issues (when you program source code gets large: 10,000,000 lines)
+      subscript error: a[i]   i = 100 or i = -1, array size is 50
+
+  Industry average: about 1 bug for every 10(!) lines of source code
+
+Lisp
+
+  background
+    1950s numeric processing ("computer" means compute numbers)
+       vs symbolic processing (‘blue’ vs ‘red’ vs ‘green’)
+
+    Lisp 1, 1.5 (1950s-60s)
+     key idea: we use S-expressions to represent programs
+      every program is easily represented as a list (perhaps improper)
+      This sounds like a hassle (((...0)))) BUT it’s a win:
+        you can easily have “self-aware” programs: they build data
+    structures that represent programs, and then they run them
+    as programs!
+
+           char buf[1000];
+       strcpy (buf, "int main (void) { return 27; }\n"); // something
+        // more complicated
+       compile (buf)
+       run ()
+       Scheme (1970s-)
+         simple teaching language
+       Common Lisp (1980s-)
+         most widely used for production
+       Emacs Lisp (1980s-)
+         used for editing and IDEs
+       PLT Scheme -> Racket (1990s, CS 131 debugging Scheme)
+       Clojure (2000s-)  Compiles Lisp into JVM bytecodes
+       Hy (2010s-) Compiles Lisp into Python abstract syntax trees (ASTs)
+          like S-expressions for Python
+       ...
+
+    list processing: we compute with atomic symbols like ‘red’, ‘green’,
+       ‘seashore’, ... glued together in more complicated structures
+       flexible
+
+       use the *pair* to glue things together.
+
+How to program with Emacs Lisp
+
+C-x b  switches buffer
+C-j evaluates the previous S-expression when you’re in the *scratch* buffer
+   C-x C-e does anywhere
+
+
+Here is the final *scratch* buffer for the Emacs session:
+
+(point)
+9
+
+
+;; This buffer is for text that is not saved, and for Lisp evaluation.
+;; To create a file, visit it with C-x C-f and enter text in its buffer.
+
+27
+27
+
+(+ 27 31 12)
+70
+
+(cos 0.5)
+0.8775825618903728
+
+(27 31 a)
+
+(current-time)
+(24213 64708 826792 123000)
+
+(current-time-string)
+"Tue Apr 14 11:11:34 2020"
+
+(defun foo (a b c)
+  (message "foo called with arguments %s, %s, %s" a b c))
+foo
+
+(foo "x" "yz" "w")
+"foo called with arguments x, yz, w"
+
+(defun foo (a b)
+  (+ a (* b b)))
+foo
+
+(foo 3 9)
+84
+
+(cons 3 12)
+(3 . 12)
+
+(cons 3 (cons 4 nil))
+(3 4)
+
+(cons "abc" (cons 3.5 (cons 27 nil)))
+("abc" 3.5 27)
+
+(cons "abc" (cons (cons 3 (cons 4 nil)) (cons 27 nil)))
+("abc" (3 4) 27)
+
+;; Quoting
+
+'("abc" (3 4) 27)
+("abc" (3 4) 27)
+
+'12
+12
+
+12
+12
+
+'a
+a
+
+a
+
+(setq a 19)
+19
+a
+19
+
+;; setq is a “special form” - it looks like a function call, but it’s not
+(setq a "abc")
+
+"abc"
+a
+"abc"
+(cons a a)
+("abc" . "abc")
+
+(current-buffer)
+#<buffer *scratch*>
+
+'(current-buffer)
+(current-buffer)
+
+                ; a comment
+;; another comment
+
+;; Other special forms
+
+(if IFPART THENPART ELSEPART)
+evaluate IFPART
+if it's not nil, evaulate THENPART and return its value
+otherwise, evaluate ELSEPART and return its value
+(IFPART ? THENPART : ELSEPART) in C, C++
+
+(if (< 3 5) "abc" 'x)
+"abc"
+
+(let ((x 12)
+      (y 19))
+  (+ (* x x) (* y y)))
+505
+ { int x = 12, y = 19; "return" x*x + y*y; }
+
+;; Execute the code inside the form, and then restore point.
+(save-excursion
+  ;; manipulates the current buffer, e.g., by going to the end and
+  ;; inserting something
+  (goto-char (point-max))
+  (insert "foobar"))
+nil
+
+
+
+(point)
+1366
+
+
+Some functions
+  (current-buffer)
+#<buffer *scratch*>
+  (other-buffer)
+#<buffer *Help*>
+   (other-buffer)
+#<buffer remarks.txt>
+(other-buffer)
+#<buffer remarks.txt>
+
+  (switch-to-buffer (other-buffer))
+#<buffer remarks.txt>
+
+  (point)
+1594
+
+(insert "abc")
+abcnil
+
+
+  (point-min)
+1
+  (point-max)
+1657
+
+foobar
+
+
+     (defun line-to-top-of-window ()
+       "Move the line point is on to top of window."
+       (interactive)
+       (recenter 0))
+
+line-to-top-of-window
+
+
+     (defun what-line ()
+       "Print the current line number (in the buffer) of point."
+       (interactive)
+       (save-restriction
+         (widen)
+         (save-excursion
+           (beginning-of-line)
+           (message "Line %d"
+                    (1+ (count-lines 1 (point)))))))
+what-line
+
+     (defun the-the ()
+       "Search forward for for a duplicated word."
+       (interactive)
+       (message "Searching for for duplicated words ...")
+       (push-mark)
+       ;; This regexp is not perfect
+       ;; but is fairly good over all:
+       (if (re-search-forward
+            "\\b\\([^@ \n\t]+\\)[ \n\t]+\\1\\b" nil 'move)
+           (message "Found duplicated word.")
+         (message "End of buffer")))
+the-the
+
+
+
+
+"a\\b"
+"a\\b"
+
+
+
+     ;; Bind 'the-the' to  C-c \
+     (global-set-key "\C-c\\" 'the-the)
+
+
+
+
+UCLA CS 97 2020-04-16 lecture
+
+Scripting and Python
+
+Context re Scripting
+
+  sh - controlling subprogram execution (thin layer; actual work is done
+          in C, C++, Python, Emacs, etc.)
+
+  Emacs Lisp - main program (text editor) extended via Lisp
+
+  Python - the main program, often all in Python
+           often used to control subsidiary modules (C,C++,...)
+     own large ecosystem (e.g., PyTorch, ...)
+
+
+History of Python
+
+  Fortran (1950s, 60s ...) scientific programming
+    Top500.org - benchmark written in Fortran
+    hard to learn, unforgiving
+  BASIC (1962?) - Fortran but realistic for learning
+    debugging interpreter; "timesharing" multiple sharing same computer
+                              single-CPU - timesliced
+               SEASnet GNU/Linux (multiple-CPU)
+    I learned it on a computer with ~ 40 KiB of RAM, 20 simultaneous users
+    BASIC has evolved - BUT still is very old-fashioned
+       loops, arrays, subroutines
+  effort made in the Netherlands to replace BASIC for introductory computing
+  CWI - leading CS research institutions in Netherlands
+  a good computer-science language (teaching-algorithms + data structures +etc)
+    ABC * higher-level data structures from the get-go
+            arrays + hash tables + sets + ...
+    * enforce good-style rules in syntax, so that it’s easier to teach
+    * good debugging + runtime support
+     - came out with technology of the time: IDE on a floppy
+         24x80 text screen - type ABC code into it, press Enter
+     It didn’t catch on. - BASIC had too much of a head start.
+     "There’s a right way to do things!"
+
+  BUT: something else was happening.
+    Unix, Linux, sh, other programming technologies
+                   little languages (sed, awk, ...)
+       early 1980s research lab in Santa Monica SDC (System Development Corp.)
+       Larry Wall - lots of little languages is a mistake
+                    you have to learn them all?
+            you might have to design one to solve your problem?!
+     Perl = sh + sed + awk + ... all glued together
+        Perl took off!
+     BUT: In English, you can say the same thing in lots of different ways.
+                    There are lots of different ways to say the same thing.
+     Perl has the same attitude: "There’s more than one way to do it."
+         if (a == b) a++;   If a equals b, add 1 to a.
+         a++ if (a == b);   Add 1 to a if a equals b.
+
+   Python = ABC + Perl
+            one     single language that can replace / glom on to
+        good      lots of everyday operational tasks
+        way
+        to
+        program
+
+How Python is implemented (short version)
+
+  Main version: CPython
+    Interpreter written in C (low level language for Unix/POSIX/Linux/etc.)
+                             (high level assembly language)
+                 (access all low level primitives)
+                 (reasonably efficient)
+    This is what we’ll be using.
+
+    This does not translate foo.py to foo.c, compile foo.c
+    Instead: python.c is compiled via GCC to ‘python’.
+            $ python
+        The interpreter is running, ready to accept source code
+        or byte codes and execute it.
+
+  JPython - interpreter written in Java (runs atop JVM)
+
+  IronPython - interpreter written atop .NET
+
+  PyPy - self-hosting interpreter
+
+      Interpretive environment - most traditional (good debugging, but slow)
+
+      "Compiled" environment - CPython bytecodes (later loaded by interpreter)
+               JPython etc. translate opportunistically to machine code
+    they won’t match C or machine code in performance
+    they’re often good enough
+
+  Often this performance speedup doesn’t matter because
+     Python is commonly used to control modules written in C/C++
+     where the bulk of the CPU/GPU time is being spent anyway
+
+Overview/Review of the language
+
+ * Syntax rules differ from Fortran, C, C++, Java, ...
+ * Newline oriented - ends-of-lines are not just white space
+ * Statements end in newlines, typically (or ‘;’)
+ * Indentation matters.
+ * Python has practially-unlimited integers.
+ * Same floating point that you’ve learned to love in C.
+ * It has complex numbers.
+ * Variables are declared automatically when you assign to them.
+ * Type checking is a runtime, declarations don’t need to specify them.
+
+Example:
+
+  line = 'GOOG,100,1257.62'
+  line.split(',')  invokes split method on strings giving you a list of substrings
+  types = [str, int, float]
+
+
+back again at 11:07
+
+Python objects
+  * Every Python value is an object and has:
+      - identity (like an address)   - cannot be changed (distinct for each obj)
+      - type                         - cannot be changed
+      - value                        - can be changed IF it’s *mutable*
+
+ invoked by the ‘.’ notation
+  * attributes (like instance variables)   o.attr
+  * methods (like instance methods)        o.m(...)
+
+Python identity
+  a is b   - tests whether a and b are the same object
+  id(a)    - identity as an integer
+  even integers have identity, but it can be tricky
+
+Python classes
+
+   class c:
+     var = 12
+     def m(self, arg1, arg2):
+       return self.var + arg + arg2
+
+   def f(arg1, arg2):
+     return arg1 + arg2
+
+In Python ‘self’ is an explicit parameter
+   object on whose behalf the method is called
+
+
+Inheritance:
+
+   class c(a, b, d):
+     ...
+
+The class c inherits from its parents a, b, d.
+
+    o = c()
+    o.m(27)   Python looks in c, a (then a’s ancestors),
+                 b (then b’s ancestors), d (and d’s ancestors) for m.
+               Depth first left to right traversal of the inheritance "tree"
+             really directed acyclic graph (DAG)
+          This algorithm tells you how Python deals with
+             multiple inheritance.
+
+Classes and namespaces.
+
+  * A class is an object.
+  * It has a member __dict__.
+  * This __dict__ acts like a dictionary containing the class’s names.
+       In effect, Python programs can easily inspect themselves.
+       They can be “self-aware”.
+       This is called “reflection”, because the program can see itself
+         in a “mirror”.
+
+Classic Python builtin types (commonly used - part of Python’s success)
+
+ * None
+
+ * Numbers
+   - integers (int (fixed size) vs long (unlimited size) originally)
+   - floats
+   - complex
+   - boolean
+
+ * sequences
+   - strings - immutable
+   - tuples  - immutable
+   - lists
+   - buffers  (like strings, but mutable)
+
+     Operations on any sequences
+
+       .    s[i]    s is a sequence, i is an integer (0 origin)
+                         If i is negative, counts backwards from end.
+       .    s[i:j]  subsequence from i up to (but not including) j
+       .    s[i:] s[:j] len(s) min(s) max(s) list(s)
+
+     Ops on mutable sequences
+
+       .    s[i] = v
+       .    s[i:j] = a   can change sequence length
+       .    del s[i]
+       .    del s[i:j]
+
+     Ops on lists
+
+       .    s.append(v)
+               This is fast, typically. O(1)
+           It can be occasionally slow, when extending internal array.
+           If you call s.append N times, cost overall is O(N)
+       lots more - take a look
+            s.pop(i)    returns s[i], removing it
+        s.pop()     s.pop(-1)  returns l
+
+Come to discussion
+Next assignment will be about Git
+Basic idea - we have a script, but it mutates as develop it.
+How do we manage that!
+
+-------
+
+$ python3
+Python 3.6.9 (default, Nov  7 2019, 10:44:02)
+[GCC 8.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 2 + 7
+9
+>>> if 3 == 4:
+...    x = 5
+... else:
+...    y = 6
+...       z = 7
+  File "<stdin>", line 5
+    z = 7
+    ^
+IndentationError: unexpected indent
+>>> if 3 == 3: print "x"
+  File "<stdin>", line 1
+    if 3 == 3: print "x"
+                       ^
+SyntaxError: Missing parentheses in call to 'print'. Did you mean print("x")?
+>>> if 3 == 3: print ("x")
+...
+x
+>>> 2
+2
+>>> 20000000
+20000000
+>>> 2000000000000000000000000000000000000000
+2000000000000000000000000000000000000000
+>>> 200000000000000000000000000000000000000000000000000000000000000000
+200000000000000000000000000000000000000000000000000000000000000000
+>>> 1e100
+1e+100
+>>> 1e1000
+inf
+>>> 1e-300
+1e-300
+>>> 1e-300/1e300
+0.0
+>>> 1+2J
+(1+2j)
+>>> 'abc'
+'abc'
+>>> "defg"
+'defg'
+>>> "abc\n"
+'abc\n'
+>>> r'abc\n'
+'abc\\n'
+>>> """abc"""
+'abc'
+>>> '''abc'''
+'abc'
+>>> '''abc
+... def
+... ghi'''
+'abc\ndef\nghi'
+>>> "abc"+"def"
+'abcdef'
+>>> "abc %s %d def" % ("xyz", -47)
+'abc xyz -47 def'
+>>> 1000 % 3
+1
+>>> 'GOOG,100,1257.62'
+'GOOG,100,1257.62'
+>>> line = 'GOOG,100,1257.62'
+>>> line = 12
+>>> line = 'GOOG,100,1257.62'
+>>> line.split(',')
+['GOOG', '100', '1257.62']
+>>> types = [str, int, float]
+>>> types
+[<class 'str'>, <class 'int'>, <class 'float'>]
+>>> zip(types, line.split(','))
+<zip object at 0x7f240d13ad08>
+>>> zip[0]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'type' object is not subscriptable
+>>> fields = [ty(val) for ty,val in zip(types, line.split(','))]
+>>> fields
+['GOOG', 100, 1257.62]
+>>> ty = str
+>>> val = 'GOOG'
+>>> ty(val)
+'GOOG'
+>>> ty = int
+>>> val = '100'
+>>> ty(val)
+100
+>>> int('100')
+100
+>>> ty = float
+>>> val = '1257.62'
+>>> ty(val)
+1257.62
+>>> line = 'GOOG,100,1257.62'
+>>> fields = [ty(val) for ty,val in zip(types, line.split(','))]
+>>> fields
+['GOOG', 100, 1257.62]
+>>> v = fields
+>>> v
+['GOOG', 100, 1257.62]
+>>> fields is v
+True
+>>> w = ['GOOG', 100, 1257.62]
+>>> v is w
+False
+>>> v == w
+True
+>>> a = 1000000000000000000000000000000000000000000000
+>>> b = 1000000000000000000000000000000000000000000000
+>>> a is b
+False
+>>> a == b
+True
+>>> c = 100
+>>> d = 100
+>>> c == d
+True
+>>> c is d
+True
+>>> id(a)
+139792747867904
+>>> id(b)
+139792747867856
+>>> (a is b) == (id(a) == id(b))
+True
+>>> class c:
+...   def m(x):
+...      return 12
+...
+>>> o = c()
+>>> o
+<__main__.c object at 0x7f240d13b860>
+>>> c
+<class '__main__.c'>
+>>> c.__dict__
+mappingproxy({'__module__': '__main__', 'm': <function c.m at 0x7f240d130c80>, '__dict__': <attribute '__dict__' of 'c' objects>, '__weakref__': <attribute '__weakref__' of 'c' objects>, '__doc__': None})
+>>> c.__dict__['m']
+<function c.m at 0x7f240d130c80>
+>>> 'm'
+'m'
+>>> f = c.__dict__['m']
+>>> f()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: m() missing 1 required positional argument: 'x'
+>>> f(o)
+12
+>>> None
+>>> o = None
+>>> o
+>>> [ 3, 9, "abc"]
+[3, 9, 'abc']
+>>> (3, 9, "abc")
+(3, 9, 'abc')
+>>> s = 'abcdef'
+>>> s[0] = 'y'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'str' object does not support item assignment
+>>> char * (mutable) vs char const * (immutable)  C-c C-c
+KeyboardInterrupt
+>>> s
+'abcdef'
+>>> s[-1]
+'f'
+>>> s[6]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError: string index out of range
+>>> s[-6]
+'a'
+>>> s[-7]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+IndexError: string index out of range
+>>> s
+'abcdef'
+>>> s[3:5]
+'de'
+>>> s[3:-1]
+'de'
+>>> s[3:]
+'def'
+>>> s[:-2]
+'abcd'
+>>> len(s)
+6
+>>> min(s)
+'a'
+>>> max(s)
+'f'
+>>> list(s)
+['a', 'b', 'c', 'd', 'e', 'f']
+>>> m = list(s)
+>>> m
+['a', 'b', 'c', 'd', 'e', 'f']
+>>> m[4] = 'x'
+>>> m
+['a', 'b', 'c', 'd', 'x', 'f']
+>>> m[2:4] = [9, 12, 16, 24]
+>>> m
+['a', 'b', 9, 12, 16, 24, 'x', 'f']
+>>> del m[1]
+>>> m
+['a', 9, 12, 16, 24, 'x', 'f']
+>>> m[1:2] = []
+>>> m
+['a', 12, 16, 24, 'x', 'f']
+>>> m.append(-12)
+>>> m
+['a', 12, 16, 24, 'x', 'f', -12]
+>>> m.pop()
+-12
+>>> m
+['a', 12, 16, 24, 'x', 'f']
+>>>
+
+
+Scripting (Python, in particular)
+Version control
+
+Python’s success initially came from its good selection of data types
+and operations.  Major categories of builtin types - these are success
+stories for your own types.
+
+   NoneType - None (“null pointer”)
+   numbers - normal stuff, Python uses runtime checking
+     Boolean 0 or 1
+     Int Long
+     Float
+     Complex
+   sequences
+     immutable (useful in more contexts)
+               (don’t have to worry about it changing while you look at it)
+           (you can do a lot of optimizations with immutable objects)
+           (you can hash it - you can compute a *short* number,
+            based on the object’s contents, and this will be the
+        same later; this number can be easy to store elsewhere)
+           (you can rest easy, analyze your program more effectively)
+       String (1-byte)
+     Unicode (multibyte - wide character)
+       Tuple
+     ---
+     mutable (helpful for incrementally changing things)
+             (small changes to these objects are cheap)
+       Lists
+       Buffer
+     ...
+   mappings
+     dictionaries, especially
+   callables (e.g., functions)
+     Function    sin(x)   (like a C function)
+     BuiltinFunction
+     BuiltinMethod
+     Class
+     Method         = (class, instance, function)
+     UnboundMethod  = (class,           function)
+     Generator = function that can *yield* a value instead of returning it
+   internal (misc. - these are the “failures” don’t fit into standard models)
+
+sequence operations
+   all sequences
+   s[i] is the most basic (selects a single element)
+   s[i:j]
+
+   mutable sequences only
+   s[i] = v
+   del s[i]
+   del s[i:j]
+
+   strings only (s is a string - they’re immutable)
+   s.index(sub, [, start [, end]])
+      In method signature documentation, putting something in [] means
+      it’s optional.
+      sub - string you’re looking for
+      optional start and end locations - indexes into string.
+
+        "abcdef".index("cde")   - like regexp matching, but cheaper
+   s.replace(old, new [, maxreplace])
+     substitutes new for every instance of old in s, at most maxreplace times
+   t.join(s)
+      joins the strings in t (sequence of strings), using s as a separator
+   s.split([sep, [,maxsplit]])
+      splits s into a list of words
+   Try them out.
+   Because strings are immutable, enormous strings are probably not a good
+      idea - they can be costly to create.
+   If you have a large amount of text data that you’re still computing,
+      strings can be slow - use buffers instead.
+   [Buffer is like a mutable string. - not really]
+   Common pattern is to use a buffer to compute the text of a (long) string,
+   and then convert it to string.  (Transformation of data from mutable to
+                                        immutable object.)  (this kind of
+                    transformation can be tricky.)
+
+
+
+
+Mapping types and dictionaries
+
+  indexes are arbitrary (immutable) keys
+  They’re unordered, because the keys don’t have to be ordered.
+     s[i:j] doesn’t make sense with mappings,
+     m[k] still makes sense.  k is the key (need not be an integer)
+          gives the value associated with that key in that mapping
+  mapping is a *partial* function from keys to values
+    it’s “supposed” to be fast (lookup table) rather than something expensive
+    KeyError exception if key is not present in the mapping
+  Keys must be immutable because dictionaries are implemented
+  via hash tables
+      {'a' : 37, 'b': 49, 'cde': 'abxyz'}
+      Internally this works by hashing the keys via a hash function h
+        (private to Python) suppose:
+       h('a') = 93
+       h('b') = 12
+       h('cde') = 51
+      Python maintains a array of size (say) 13, to hold the key value pairs,
+      and takes the hash values modulo 13
+          93%13 = 2, 12%13 = 12, 51%13=12
+      a[2] = 37, a[12] = 49, a[12] = 'abxyz'
+      If you’re unlucky there’s a collision, we can resolve this by:
+          - grow the array from size 13 to (say) 29
+      - use the first unused slot
+      - array as an array of linked lists of colliding entries
+      Python does this automatically so it’s fast and small “enough”.
+      Mutating the keys would mean that you’ll need to rehash.
+         So, every time I change a string, Python needs to find
+     every dictionary having that string as a key, and rehash it!
+     This is too expensive.
+     So - don’t do that.
+  Operations on dictionaries
+    Create via {}
+    d[k]   looks up k in d, returns a value or KeyError
+    d[k] = v    replaces or inserts the k value in d to be v
+    d.has_key(k)   using the dictionary as a set of keys
+    d.get(k[,v])    like d[k] but no error, but you get v (defaults to None)
+    d.clear()   empties out the dictionary
+    d.copy()   makes a copy of the dictionary (not of its values)
+    d.items()  list of (key,value) pairs
+    d.keys()   list of keys
+    d.values() list of values
+    d.update(e)  merges the dictionary e into d (like “union” but e wins
+    d.popitem()  removes a randomish (key,value) pair from d, returns it
+    del d[k]   removes an item from the dictionary
+
+Resume at 11:03
+
+Callables
+  Functions and function operations
+    lambdas
+    named args
+    varargs
+    named + varargs
+  Write arbitrary replacements for functions
+    for debugging (wrappers around functions)
+    you want to wrap an arbitrary function
+    you need to do both *x and **x  (any number of unnamed args,
+                                     any number of named args)
+    def wrapper(*tuple, **dict):
+      do stuff with tuple and dict (this is the extra stuff)
+      then call actual function (does actual work)
+      do some other wrapper stuff here.
+
+          ... extra stuff ...  ACTUAL ACTIONS ... extra stuff ...
+
+How do you define a new type (class) that behaves like integers, or dictionaries
+You want a new numeric type, to implement quaternions
+Define methods that tell the python interpreter “I want to behave like a number”.
+  class quaternion:
+    def __add__(self, other):
+      implements addition for quaternions
+
+    def __coerce__(self, other):
+      retuns a tuple containing ’self’ and ’other’ converted to a common type
+          or None if not possilbe
+
+a + b
+
+    def __hash__(self):
+      -- return an integer used for hashing in dictionaries --
+
+    def __nonzero__(self):
+      returns 0 or 1
+
+    def __cmp__(self, other):
+      return -1, 0, 1
+
+    def __le__(self, other):
+    def __lt__(self, other):
+    ...
+
+
+
+
+   if o:       calls o.__nonzero()
+     return x;
+   if o < p:
+
+
+Scaling up to larger Python programs
+
+   Python modules
+
+        import shuf
+
+     1. Create a new namespace (dictionary mapping identifiers to values)
+     2. Read and execute code taken from shuf.py in that namespace.
+     3. Create a new name ‘shuf’ in the importer’s namespace,
+          bound to the newly created namespace.
+
+         shuf.fancier(51, 97, 26, xxxx=15, y=12) will then call the function
+       defined in shuf..py
+
+        from shuf import fancier, fancy
+
+     similar, except it imports those specific names into the importer’s
+     namespace
+
+        from shuf import *
+
+more python later
+
+
+
+---- shell transcript follows ----
+
+501-day $ python
+Python 2.7.17 (default, Apr 15 2020, 17:20:14)
+[GCC 7.5.0] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> "a,b,c,d".split(",")
+['a', 'b', 'c', 'd']
+>>> 93%13
+2
+>>> 12%13
+12
+>>> 51%13
+12
+>>> "abc"[0] = "x"
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'str' object does not support item assignment
+>>> d = {'a' : 37, 'b': 49, 'cde': 'abxyz'}
+>>> d['a']
+37
+>>> d[12] = 'qrx'
+>>> d
+{'a': 37, 'cde': 'abxyz', 'b': 49, 12: 'qrx'}
+>>> d['b'] = d
+>>> d
+{'a': 37, 'cde': 'abxyz', 'b': {...}, 12: 'qrx'}
+>>> e = {}
+>>> f = {}
+>>> e is f
+False
+>>> e[1] = 'abc'
+>>> e
+{1: 'abc'}
+>>> f
+{}
+>>> d = {}
+>>> d['abc']
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 'abc'
+>>> d['abc'] = 'defgh'
+>>> d[27] = 'qrx'
+>>> d['qrx'] = d
+>>> d
+{27: 'qrx', 'qrx': {...}, 'abc': 'defgh'}
+>>> d.has_key('qrx')
+True
+>>> d.has_key('defgh')
+False
+>>> d.get(27)
+'qrx'
+>>> d.get(92)
+>>> d.get(92, 'foo')
+'foo'
+>>> e = d.copy()
+>>> e
+{'qrx': {27: 'qrx', 'qrx': {...}, 'abc': 'defgh'}, 27: 'qrx', 'abc': 'defgh'}
+>>> e.clear()
+>>> e
+{}
+>>> d
+{27: 'qrx', 'qrx': {...}, 'abc': 'defgh'}
+>>> d.items()
+[(27, 'qrx'), ('qrx', {27: 'qrx', 'qrx': {...}, 'abc': 'defgh'}), ('abc', 'defgh')]
+>>> d.keys()
+[27, 'qrx', 'abc']
+>>> d.items()
+[(27, 'qrx'), ('qrx', {27: 'qrx', 'qrx': {...}, 'abc': 'defgh'}), ('abc', 'defgh')]
+>>> d.values()
+['qrx', {27: 'qrx', 'qrx': {...}, 'abc': 'defgh'}, 'defgh']
+>>> e = { -5: 'xy' , 'qrx': 50 }
+>>> d.update(e)
+>>> d
+{27: 'qrx', 'qrx': 50, 'abc': 'defgh', -5: 'xy'}
+>>> i = d.popitem()
+>>> i
+(27, 'qrx')
+>>> d
+{'qrx': 50, 'abc': 'defgh', -5: 'xy'}
+>>> del d[50]
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+KeyError: 50
+>>> del d['abc']
+>>> d
+{'qrx': 50, -5: 'xy'}
+>>> def (x):
+  File "<stdin>", line 1
+    def (x):
+        ^
+SyntaxError: invalid syntax
+>>> def f(x):
+...    return 2*x + 1
+...
+>>> f(12)
+25
+>>> lambda x: 2*x + 1
+<function <lambda> at 0x7f1b72621150>
+>>> g = lambda x: 2*x + 1
+>>> g(13)
+27
+>>> f is g
+False
+>>> f
+<function f at 0x7f1b7260dcd0>
+>>> g
+<function <lambda> at 0x7f1b72621250>
+>>> f(-1)
+-1
+>>> g(-1)
+-1
+>>> def h(x, *more):
+...    return (x, more)
+...
+>>> def h(x, *more): return (x, more)
+...
+>>> f is g
+False
+>>> f == g
+False
+>>> h(5, 9, 27)
+(5, (9, 27))
+>>> h(5, 9, 27, 3, 5, 7, "abc")
+(5, (9, 27, 3, 5, 7, 'abc'))
+>>> def i(*more):
+...   return more
+...
+>>> i(3, 0 , 6)
+(3, 0, 6)
+>>> i()
+()
+>>> def printf(format, *args):
+...    return format % args
+...
+>>> printf('a = %s, b = %d', 'xyz', -12)
+'a = xyz, b = -12'
+>>> def printf(format, arg1, arg2, arg3)
+  File "<stdin>", line 1
+    def printf(format, arg1, arg2, arg3)
+                                       ^
+SyntaxError: invalid syntax
+>>> def printf(format, arg1, arg2, arg3):
+...    return format % (arg1, arg2, arg3)
+...
+>>> def divide(num, denom):
+...    return num / denom
+...
+>>> divide(10, 3.0)
+3.3333333333333335
+>>> divide(denom=2, num=10)
+5
+>>> def fancy(x, **bunch):
+...    return (x, bunch)
+...
+>>> fancy(37, num=10, denom=51, foobar='abc')
+(37, {'denom': 51, 'foobar': 'abc', 'num': 10})
+>>> def fancier(x, *y, **z):
+...    return (x, y, z)
+...
+>>> fancier(51, 97, 26, x=15, 32, y=12)
+  File "<stdin>", line 1
+SyntaxError: non-keyword arg after keyword arg
+>>> fancier(51, 97, 26, x=15, y=12)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: fancier() got multiple values for keyword argument 'x'
+>>> fancier(51, 97, 26, xxxx=15, y=12)
+(51, (97, 26), {'y': 12, 'xxxx': 15})
+>>> fancier
+<function fancier at 0x7f1b72621750>
+>>>
+
+
+Python remnants
+Version control etc.
+
+aside: ’ often means '
+
+midterm on Tuesday - in class (intended for about an hour)
+
+Modules and packages
+  Modules as mechanisms for namespace control (last time)
+  Interfaces between modules specified via names (identifiers)
+
+Bigger problem twofold:
+  If you have a big program, how to split into modules so that
+    the program is easier to
+      - understand (for yourself)
+      - break apart and reassemble (for yourself)
+  Collaboration among programmers
+    You can understand other people’s code more readily.
+    You break a big problem into five pieces, give each piece
+      to a separate person
+
+‘import foo’
+  == I want to use foo’s interface.
+
+sys.modules - tells you what you’re currently importing
+sys.path - tells you what directories you’ll import from (more later)
+
+Convention for modules:
+
+myfile.py contains this:
+   [whatever code you want]
+   class a:
+     stuff
+   def f(x):
+     other stuff
+   def testmystuff(a):
+     lots of tests involving a
+   foobar = ’abc’
+
+      module name
+      |
+      v
+   if __name__ == ’__main__’:
+      sys.exit(testmystuff(sys.argv[1:]))   <--- tests for this module
+   else:
+      some other stuff here
+
+
+$ python myfile.py a b c  (within myfile.py, __name__ == ’__main__’)
+
+Convention is part of a software development philosophy that emphasizes
+tests.  “Test-first development” -- write your test cases *first*, *then*
+write your code.
+
+normal use:
+   yourfile.py:
+      import myfile
+
+
+Packages: group modules together into a hierarchy (directory hierarchy)
+
+sys.path is a list of directory names, each of them is a package root
+
+sys.path is to Python as the PATH environment variable is the shell.
+    PATH=/usr/local/cs/bin:/usr/bin:/bin
+    sys.path = list of directory names
+
+Enough of Python for now.
+But it’s not enough about collaboration.
+
+
+DevOps - “buzzword” movement in software engineering to
+  break down traditional barriers between DEVelopers
+  and OPerations Staff
+    Ops keep the system running
+      Hardware support to some extent
+      Software support
+    In small development, same guy (you in CS 31)
+    In larger organizations, you get specialization
+      - developers “white collar”
+      - ops staff “blue collar”
+    At UCLA: SEASnet has some ops staff
+       They help develop CCLE.
+
+    Like marketing vs sales
+ goal is to have seamless communication between developers and ops staff
+   developers should know how to operate
+   ops staff should know how to develop
+
+ ops staff also needs version control - they write code to do their work!
+                                        they maintain systems
+                    they configure systems
+                    *Configuration* is a big deal.
+    Many examples of big system failures are due to configuration errors.
+    Configuration: you map of how the system got put together.
+       often very simple
+       can be more complicated
+
+
+Version control needs
+
+  - Backups in case you (or somebody else) messes up.
+      - “I deleted my source file!”
+      - “I removed some lines by mistake, and hit ‘Save’!
+      - xoTypos in source code by mistyping.
+
+  - More generally, it’s *History* for people who want to know,
+       “Why is the source code / configuration / etc. the way it is now?”
+       see the UCLA History Dept. - it’s complicated!
+
+     - Comments in your source code should do that.
+           /* Subtract 2 from I rather than 1, because subtracting
+          1 causes a bug in the Gtk+ transformer widget.  */
+       i -= 2;
+     Everything not commented should be completely obvious.
+     (This doesn’t always work.)
+
+     - How do you connect bug reports & feature requests to this history?
+          Bug report 59327 - caused source code to change, to fix the bug.
+      Go from bug report to source code.
+      Go from source code to the bug report.
+
+     - How do you connect two histories?  Say you merge source code
+          from one project into another.
+
+     - These are common questions for developers looking at their own stuff.
+          You won’t remember what you did six months ago.
+     - It also comes up when you look at other developers’ code.
+          This is a harder problem.
+      Software archaeology - like King Tut’s tomb!
+
+  - It’s also about the *Future*
+      - many-worlds interpretation (Ted Chiang etc.)
+      - many possible changes to be made to your software
+         - sometimes, they don’t interact
+         Change to module A
+         Change to module B
+            they’re independent
+        doesn’t matter what order you make them
+      - too often, they *do* interact
+          this is tricky (can be among the hardest software construction jobs)
+
+
+Backups are a common issue in operations
+  SEASnet ops staff backs up your files.
+
+  - Periodically, make a copy of everything.
+     Say, at 02:00 every day: stop operations, copy all your files
+        to magnetic tape (it’s cheap), restart operations.
+     If your servers all die, buy new ones, and restore from the
+        most recent backup.
+     *Stop all operations*?!?! is a bit excessive. -
+  - To some extent, the opposite of caches.
+      cache - high speed local copy of the true data to improve performance
+      backup - low speed remote copy of the true data to improve reliability
+  - You back up all your work, right?!?! (If not, time to start.)
+
+  - To do this right, you must have a *failure model*, e.g.:
+     - Your flash or disk drive fails completely.
+     - You have bad blocks on your drive.
+     - You delete files by mistake.
+          $ rm *.o
+      $ rm * .o
+      .o: no such file
+      $ ooops!
+     - You trash files by mistake.
+          $ cp c b
+     - An outside attacker deletes or trashes files.
+          “ransomware” - encrypts your files, send key to attacker
+     - An *inside* attacker corrupts files.
+          Don’t let the inside attacker corrupt your backups!
+  - E.g., failures of hard disks with AFR of 3%
+         3% of these drives fail every year (3% is bad, but not unheard of)
+      - If you take a backup, what’s annual probability of losing data
+           0.03 * 0.03 = 0.0009 AFR is this right?
+          of course it’s not right.
+            - Disks don’t fail independently.
+        - You replace drives more quickly than a year.
+      - The point is you don’t just do backups, you also do *recovery*.
+      - Common problem: people make backups, don’t test their recovery
+           scheme.
+
+      - So: it’s important to *test* your recovery scheme.
+      - Unplug your main flash drive, say.
+
+  - What to back up (related to what to do version control on).
+
+     - Source File (other file) contents.
+     - File metadata: data *about* the file, rather than the ocntents.
+        - timestamps, ownership (ls -l, etc.)
+    - partitioning (filesystem organized)
+     - Files as sequences of bytes, or as sequences of *blocks*
+         *block* - 8 KiB (8192 bytes, 2**13 bytes), say
+     many filesystems are block oriented
+     if you backup the blocks, you’ve backed up the filesystem
+     this lets you build a backup strategy, independent of filesystem
+     - Do you back up *every* change you make to the source code, etc.?
+         This hurts performance.
+     Makes it harder to navigate through zillions of backups.
+     - What do you do when you run out of backup storage?
+         How do you reclaim space when you have so many backups you’ve
+       run out of space.
+
+  - How to do backups more efficiently or more cheaply.
+
+      - Do them less often (of course).
+      - Do backups to a cheaper, slower device
+          flash -> disk
+      disk -> magtape
+      disk -> cloud etc. (cloud must be trustworthy)
+      - Incremental backups
+          Back up the *difference* between the current state and
+        previously backed-up state (e.g., back up only the changed blocks)
+      Makes backups smaller, faster (less I/O to backup device)
+      Makes recovery more complicated
+      - Delta (difference between previous and next state) contains:
+          insert new data
+      delete old data
+      replace (insert+delete)
+      fancier commands in the delta
+      like the output of the ‘diff’ command
+
+   - Other optimizations of backups
+
+       - Data grooming (removing unnecessary backup data) via
+           automated, optimized way to avoid mistakes
+       - Deduplication (often done at block level)
+           Coalesce all blocks with identical contents,
+         and just keep one copy in your backups.
+       WARNING: Make sure that copy does not go bad!
+       - Compression
+           gzip (etc.) the backup copy
+       - Encryption
+           encrypt the backup copy (e.g., cloud backup)
+       - Multiplexing (use single backup device for many systems)
+       - Staging (flash -> disk, then disk -> magtape)
+
+    How do you know your backups are working?
+       - Testing recovery.
+       - Checksumming (deliberate but cheap redundancy in the backup)
+
+
+after the midterm
+
+Version control for software
+ 
+ multiple versions of software, data, configuration, documentation, etc.
+ How to manage this?
+   - first cut: just take backups
+   - that’s not good enough - what technology can be better!
+   ...... Git
+
+
+2020-04-30 UCLA CS 97 lecture
+
+Devops + backups last time
+
+Version control today derived from earlier systems
+
+  like backups, not just for code - for data, documentation, etc.
+
+File systems with versioning built in
+  + no need for separate software - *everything* is versioned automatically
+
+  if you do this all the time, new version all the time, on every write.
+    overkill - you want a new version only at reasonable checkpoints
+
+  classic approach, ***applications decide when there’s a new version***
+    - Used TENEX, OpenVMS, ...,
+      - Files-11 filesystem
+          foo.c;1
+      foo.c;2
+      foo.c;3    3 different versions of foo.c
+      header.h;1
+      header.h;2
+          cat foo.c  - retrieves most recent version
+          cat 'foo.c;1' - retrieves version 1
+       - When you *save* a file (e.g., by finishing writing and closing)
+          new copy gets the maximum of all existing numbers, plus 1
+       - Not every app does a *save* - database systems do *lots* of writes
+              so in some sense versions are optional
+       - You can limit the number of outstanding versions.
+            to save space, etc.
+       - There’s a hard limit of 32767 versions per file
+     Versioning info is *metainformation* about a file.
+       ls -l outputs date, owner, ..., version
+     Even on GNU/Linux, some text editors do this.
+
+   another classic approach, ***file system decideds periodically to make
+                                  snapshots***
+      - Used on WAFL (on SEASnet NetApp servers), ZFS, Btrfs, ...
+      - System periodically (on sysadmin’s schedule)
+         makes a snapshot of the whole filesystem.
+      - You can look at old snapshots, but you can’t change history.
+      - Closely related to backups, recover from user errors
+          that delete or trash files.
+      - Typically snapshots are written on the same set of drives,
+          so don’t necessary recover from media failures.
+      - Protects from some insider attacks (e.g., a fellow student)
+          but not all - (old attacks)
+      (sysadmin attacks)
+      - Done efficiently via a “trick” - Copy-on-Write (CoW, COW)
+             snapshot is a pointer to a data structure representing
+         all the files and directories and their contents.
+         efficient to create snapshot
+         BUT it shares space with the actual data
+         When you write a file, you write into a copy of that file
+          Storage cost: size of snapshot + size of changed blocks + metadata
+
+        diff .snapshot/weekly.1/bigfile bigfile
+
+Version control for software systems
+
+    - greater efficiency than doing it in the filesystem
+        we want to be able to see “inside” the repository
+    to know where commonalities already are
+    - more *utility* than doing it in the filesystem
+        branching, merging, etc. instead of a linear approach
+    extra metadata that a filesystem is not likely to have
+      (our own version tags, say)
+
+   Here are some useful features in a versioning system.
+      - Keep histories indefinitely (of course).
+
+      - Record metadata (info about software) as well as data (software itself)
+          - Who last changed the file?               -- not in filesystem
+      - Is the file regular or a symbolic link?  -- filesystem
+      - File renaming.
+           $ mv foo.c index-builder.c
+            ... diff .snapshot/weekly.1/foo.c index-builder.c
+       Does VC record renames?
+      - Metadata *about the history itself*.
+          Can you give a name to a particular version? (Git "tags")
+      Can you find out who assigned a tag to a version,
+         and when they did it?
+
+      - Atomic commits.
+          Old version + change (foo.c, bar.h) -> new version
+      You want this change to be all-or-nothing.
+
+              $ cp newfoo.c foo.c
+          $ cp newbar.h bar.h
+
+       - Programmable version-control
+           Git, etc. almost always have glitches for you particular project.
+       They need to be tailored for your project.
+       You’re in charge, not Git!
+       One way: shell script wrappers.
+       Another way: hooks
+          scripts invoked by Git at critical points in its actions
+          You type: "git commit foo"
+              does a bunch of stuff
+          (check for trailing white space)
+          finish the commit
+
+        - Signed commits (security)
+
+        - Format conversion
+         Microsoft CRLF at end of text lines vs
+           POSIX LF at end of text lines
+         Character encoding: UTF-8 vs Shift-JIS
+
+
+        - Visualization (of histories, etc.)
+          navigate through old histories
+
+Git intro from user’s viewpoint
+
+   Three things about the state:
+     . Ordinary files that you would have without Git.
+     . Object database containing the *history* of your project.
+         special format, under Git control
+     . Index (or “staging area”) containing the *planned future* of your
+         project.
+     - caches the ordinary files + some changes
+     - used to create commits (change to the object database)
+           “commit” means “atomic change”
+     - used for more-complicated changes - merges
+
+   Commands I use all the time.
+
+     $ [git init - creates empty database]
+     $ git clone - copies object database from one location to another
+
+  Status info
+     $ git log
+     $ git status
+     $ git diff
+     $ git config
+     $ git show
+     $ git ls-files
+     $ git grep
+
+
+
+An aside about checksums.
+
+   Basic idea is that you want to check that you have the right data.
+
+   a:
+      a;lfjas;flkjf;aksjdfsl;fdkjas;l.fkjsdf;lkjfkldfjxdl;kfkjxdflkdj
+   compute a checksum of a
+      ’a’ ^ ’;’ ^ ’l’ ^ ... ^ ’j’  = 93 (say)
+
+   cp a b
+   b:
+     a;lfjas;flkjf;aksjdfsl;fdkjas;l.fkjsdf;lkjfkldfjxdl;kfkjxdflkjd
+      Compute the checksum for the file "b",
+      by examining its contents, compare that checksum to a’s.
+
+   Cryptographic checksum (or hash) typically many bits longs
+      If h(data1) = H,
+      it’s very hard to compute data2 != data1 such h(data2) = H
+
+
+   SHA-1 algorithm is used by Git so that collisions are extremely unlikely
+     (unless an adversary has access to your repository)
+
+
+
+---- shell transcript -----
+
+501-day $ cd $HOME/src/gnu/emacs
+...
+503-day $ ls -al master
+total 7148
+drwxr-xr-x 21 eggert eggert    4096 Apr 20 10:51 .
+drwxr-xr-x 41 eggert eggert    4096 Apr 30 08:57 ..
+drwxr-xr-x  8 eggert eggert    4096 Apr 16 09:09 admin
+-rwxr-xr-x  1 eggert eggert   11053 Dec 31 21:58 autogen.sh
+-rw-r--r--  1 eggert eggert     932 Sep 14  2017 BUGS
+drwxr-xr-x  3 eggert eggert    4096 Mar  8 16:51 build-aux
+-rw-r--r--  1 eggert eggert  478613 Dec 31 21:58 ChangeLog.1
+-rw-r--r--  1 eggert eggert 1310339 Dec 31 21:58 ChangeLog.2
+-rw-r--r--  1 eggert eggert 4967171 Apr 20 10:51 ChangeLog.3
+-rw-r--r--  1 eggert eggert     628 Dec 23 12:24 .clang-format
+-rw-r--r--  1 eggert eggert   14870 Dec 31 21:58 config.bat
+-rw-r--r--  1 eggert eggert  200972 Apr 16 11:59 configure.ac
+-rw-r--r--  1 eggert eggert   18240 Dec 23 12:24 CONTRIBUTE
+-rw-r--r--  1 eggert eggert   35149 Oct  1  2017 COPYING
+-rw-r--r--  1 eggert eggert    1324 Dec 23 12:24 .dir-locals.el
+drwxr-xr-x  7 eggert eggert    4096 Dec  9  2014 doc
+drwxr-xr-x 14 eggert eggert    4096 Apr 29 08:59 etc
+drwxr-xr-x  7 eggert eggert    4096 Apr 29 08:59 .git
+-rw-r--r--  1 eggert eggert    2882 Dec 31 21:58 .gitattributes
+-rw-r--r--  1 eggert eggert    5050 Mar  8 16:51 .gitignore
+-rw-r--r--  1 eggert eggert    2339 Jan  4 11:19 .gitlab-ci.yml
+-rw-r--r--  1 eggert eggert    4382 Dec 31 21:58 GNUmakefile
+drwxr-xr-x  2 eggert eggert    4096 Dec  8  2018 info
+-rw-r--r--  1 eggert eggert   31940 Mar  8 16:51 INSTALL
+-rw-r--r--  1 eggert eggert    4170 Dec 31 21:58 INSTALL.REPO
+drwxr-xr-x  5 eggert eggert    4096 Dec 31 21:58 leim
+drwxr-xr-x  4 eggert eggert   12288 Apr 20 10:51 lib
+drwxr-xr-x  2 eggert eggert    4096 Apr  4 16:57 lib-src
+drwxr-xr-x 26 eggert eggert   20480 Apr 29 08:59 lisp
+drwxr-xr-x  2 eggert eggert    4096 Dec 31 21:58 lwlib
+drwxr-xr-x  2 eggert eggert    4096 Mar 28 14:08 m4
+-rwxr-xr-x  1 eggert eggert   14875 Dec 31 21:58 make-dist
+-rw-r--r--  1 eggert eggert   45393 Mar  8 00:17 Makefile.in
+drwxr-xr-x  2 eggert eggert    4096 Dec 31 21:58 modules
+drwxr-xr-x  3 eggert eggert    4096 Mar  8 16:51 msdos
+drwxr-xr-x  5 eggert eggert    4096 Dec 31 21:58 nextstep
+drwxr-xr-x  4 eggert eggert    4096 Apr 19 19:41 nt
+drwxr-xr-x  2 eggert eggert    4096 Dec 31 21:58 oldXMenu
+-rw-r--r--  1 eggert eggert    6125 Mar  8 16:51 README
+drwxr-xr-x  4 eggert eggert   12288 Apr 29 08:59 src
+drwxr-xr-x  7 eggert eggert    4096 Dec 31 21:58 test
+...
+506-day $ git clone master cs97
+Cloning into 'cs97'...
+done.
+507-day $ cd cs97
+508-day $ ls -al
+total 7128
+drwxr-xr-x 20 eggert eggert    4096 Apr 30 11:14 .
+drwxr-xr-x 41 eggert eggert    4096 Apr 30 11:14 ..
+drwxr-xr-x  8 eggert eggert    4096 Apr 30 11:14 admin
+-rwxr-xr-x  1 eggert eggert   11053 Apr 30 11:14 autogen.sh
+-rw-r--r--  1 eggert eggert     932 Apr 30 11:14 BUGS
+drwxr-xr-x  3 eggert eggert    4096 Apr 30 11:14 build-aux
+-rw-r--r--  1 eggert eggert  478613 Apr 30 11:14 ChangeLog.1
+-rw-r--r--  1 eggert eggert 1310339 Apr 30 11:14 ChangeLog.2
+-rw-r--r--  1 eggert eggert 4967171 Apr 30 11:14 ChangeLog.3
+-rw-r--r--  1 eggert eggert     628 Apr 30 11:14 .clang-format
+-rw-r--r--  1 eggert eggert   14870 Apr 30 11:14 config.bat
+-rw-r--r--  1 eggert eggert  200972 Apr 30 11:14 configure.ac
+-rw-r--r--  1 eggert eggert   18240 Apr 30 11:14 CONTRIBUTE
+-rw-r--r--  1 eggert eggert   35149 Apr 30 11:14 COPYING
+-rw-r--r--  1 eggert eggert    1324 Apr 30 11:14 .dir-locals.el
+drwxr-xr-x  7 eggert eggert    4096 Apr 30 11:14 doc
+drwxr-xr-x 14 eggert eggert    4096 Apr 30 11:14 etc
+drwxr-xr-x  8 eggert eggert    4096 Apr 30 11:14 .git
+-rw-r--r--  1 eggert eggert    2882 Apr 30 11:14 .gitattributes
+-rw-r--r--  1 eggert eggert    5050 Apr 30 11:14 .gitignore
+-rw-r--r--  1 eggert eggert    2339 Apr 30 11:14 .gitlab-ci.yml
+-rw-r--r--  1 eggert eggert    4382 Apr 30 11:14 GNUmakefile
+-rw-r--r--  1 eggert eggert   31940 Apr 30 11:14 INSTALL
+-rw-r--r--  1 eggert eggert    4170 Apr 30 11:14 INSTALL.REPO
+drwxr-xr-x  5 eggert eggert    4096 Apr 30 11:14 leim
+drwxr-xr-x  2 eggert eggert    4096 Apr 30 11:14 lib
+drwxr-xr-x  2 eggert eggert    4096 Apr 30 11:14 lib-src
+drwxr-xr-x 26 eggert eggert   12288 Apr 30 11:14 lisp
+drwxr-xr-x  2 eggert eggert    4096 Apr 30 11:14 lwlib
+drwxr-xr-x  2 eggert eggert    4096 Apr 30 11:14 m4
+-rwxr-xr-x  1 eggert eggert   14875 Apr 30 11:14 make-dist
+-rw-r--r--  1 eggert eggert   45393 Apr 30 11:14 Makefile.in
+drwxr-xr-x  2 eggert eggert    4096 Apr 30 11:14 modules
+drwxr-xr-x  3 eggert eggert    4096 Apr 30 11:14 msdos
+drwxr-xr-x  5 eggert eggert    4096 Apr 30 11:14 nextstep
+drwxr-xr-x  4 eggert eggert    4096 Apr 30 11:14 nt
+drwxr-xr-x  2 eggert eggert    4096 Apr 30 11:14 oldXMenu
+-rw-r--r--  1 eggert eggert    6125 Apr 30 11:14 README
+drwxr-xr-x  3 eggert eggert   12288 Apr 30 11:14 src
+drwxr-xr-x  7 eggert eggert    4096 Apr 30 11:14 test
+509-day $ pwd
+/home/eggert/src/gnu/emacs/cs97
+510-day $ git log | head -n 50
+commit 0a982c077e7393d865622ff780906a0cb252348d
+Author: Stephen Gildea <stepheng+emacs@gildea.com>
+Date:   Wed Apr 29 07:36:07 2020 -0700
+
+    Test iso8601-parse-zone vs format-time-string %z
+   
+    * test/lisp/calendar/iso8601-tests.el
+    (iso8601-format-time-string-zone-round-trip): New unit test that
+    format-time-string %z and iso8601-parse-zonme are inverses.
+    (test-iso8601-format-time-string-zone-round-trip): New helper function.
+
+commit b56401f3849cf6d00717ab8a64a221f2c01455a6
+Merge: 17eae91cb1 2f9bfaef21
+Author: Glenn Morris <rgm@gnu.org>
+Date:   Wed Apr 29 07:50:20 2020 -0700
+
+    Merge from origin/emacs-27
+   
+    2f9bfaef21 (origin/emacs-27) ; Fix last change
+    520fd3e728 * lisp/env.el (substitute-env-vars): Doc fix.  (Bug#40948)
+    85544f8ef5 * lisp/isearch.el: Fix lazy-highlighting and lazy-counting...
+    d83cc05a73 Fix error in ERC when 'erc-server-coding-system' is custom...
+    16fed05ba8 Avoid crashes on TTY frames with over-long compositions
+    0278741676 Fix typo in custom.texi
+    9f5ae717fb * test/lisp/simple-tests.el (with-shell-command-dont-erase...
+    1f76a16ed3 * lisp/image-mode.el (image-mode-map): Update menu items.
+    f0e1bf56f0 Fix bugs in tab-bar and tab-line and mention remaining fea...
+    f0b9f18457 Make shell-command tests fit for tcsh.
+    68f4a740a1 Remove doc duplication
+    ac31cd384c * etc/NEWS: Fix inconsistencies.
+   
+    # Conflicts:
+    #       etc/NEWS
+
+commit 2f9bfaef21043d7894334b33b8538a165250f499
+Author: Eli Zaretskii <eliz@gnu.org>
+Date:   Wed Apr 29 14:15:03 2020 +0300
+
+    ; Fix last change
+
+commit 520fd3e728d46702a04f6a19f23ed64a66900d51
+Author: Eli Zaretskii <eliz@gnu.org>
+Date:   Wed Apr 29 14:06:35 2020 +0300
+
+    * lisp/env.el (substitute-env-vars): Doc fix.  (Bug#40948)
+
+commit 17eae91cb1b45711be676bce79bcc5fcd7df2d3d
+Author: Stefan Kangas <stefankangas@gmail.com>
+Date:   Wed Apr 29 10:28:07 2020 +0200
+
+511-day $ git log >/tmp/log
+512-day $ ls -l /tmp/log
+-rw-r--r-- 1 eggert eggert 44332269 Apr 30 11:29 /tmp/log
+513-day $ git ls-files
+.clang-format
+.dir-locals.el
+.gitattributes
+.gitignore
+.gitlab-ci.yml
+BUGS
+CONTRIBUTE
+...
+514-day $ grep 'foo.*bar' $(git ls-files) # grep is your friend!
+ChangeLog.1:    force the format "/c/foo/bar" to simplify conversions to native
+ChangeLog.1:    is in the full /d/foo/bar form.  See the discussion in
+ChangeLog.1:    all the "set foo=bar" commands.  Update pointers to DJGPP FTP sites.
+ChangeLog.1:    path elements (like '::' in 'foo::bar').
+ChangeLog.2:    Don't treat /foo/bar:mumble as ange-ftp address
+ChangeLog.2:    (desktop-load-file): Guess that "foobar" defines "foobar-mode".
+...
+516-day $ git grep 'foo.*bar' | cat
+ChangeLog.1:    force the format "/c/foo/bar" to simplify conversions to native
+ChangeLog.1:    is in the full /d/foo/bar form.  See the discussion in
+ChangeLog.1:    all the "set foo=bar" commands.  Update pointers to DJGPP FTP sites.
+ChangeLog.1:    path elements (like '::' in 'foo::bar').
+ChangeLog.2:    Don't treat /foo/bar:mumble as ange-ftp address
+ChangeLog.2:    (desktop-load-file): Guess that "foobar" defines "foobar-mode".
+...
+517-day $ grep 'xml.*foo.*bar' $(git ls-files)
+lisp/ChangeLog.10:    * xml.el: Use setq rather than (set 'foo bar).
+test/lisp/xml-tests.el:    ("<?xml version=\"1.0\"?><!DOCTYPE foo SYSTEM \"bar.dtd\" [<!ENTITY ent \"AbC\">]><foo a=\"b\"><bar>&ent;;</bar></foo>" .
+test/lisp/xml-tests.el:    ("<?xml version=\"1.0\"?><!DOCTYPE foo SYSTEM \"bar.dtd\" [<!ENTITY % pent \"AbC\"><!ENTITY ent \"%pent;\">]><foo a=\"b\"><bar>&ent;;</bar></foo>" .
+test/src/xml-tests.el:    ("<?xml version=\"1.0\"?><foo baz=\"true\">bar</foo>"
+test/src/xml-tests.el:    (,(concat "<?xml version=\"1.0\"?><foo>bar</foo><!--comment-1-->"
+test/src/xml-tests.el:    ("<?xml version=\"1.0\"?><foo baz=\"true\">bar</foo>"
+test/src/xml-tests.el:    (,(concat "<?xml version=\"1.0\"?><foo>bar</foo><!--comment-1-->"
+518-day $ echo grep 'xml.*foo.*bar' $(git ls-files)
+grep xml.*foo.*bar .clang-format .dir-locals.el .gitattributes .gitignore .gitlab-ci.yml BUGS CONTRIBUTE ...
+520-day $ git ls-files | grep 'prolog.*g'
+test/manual/indent/prolog.prolog
+521-day $ git status # tells you a bit about what changes you were planning
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+...
+$ 523-day $ git config -l | cat
+push.default=simple
+user.name=Paul Eggert
+user.email=eggert@cs.ucla.edu
+sendemail.smtpencryption=ssl
+sendemail.smtpserver=zimbra.cs.ucla.edu
+sendemail.smtpuser=eggert
+sendemail.smtpserverport=465
+core.repositoryformatversion=0
+core.filemode=true
+core.bare=false
+core.logallrefupdates=true
+remote.origin.url=/home/eggert/src/gnu/emacs/master
+remote.origin.fetch=+refs/heads/*:refs/remotes/origin/*
+branch.master.remote=origin
+branch.master.merge=refs/heads/master
+524-day $ cat ~/.git/config
+cat: /home/eggert/.git/config: No such file or directory
+525-day $ cat ~/.gitconfig
+[push]
+    default = simple
+[user]
+    name = Paul Eggert
+    email = eggert@cs.ucla.edu
+[sendemail]
+    smtpencryption = ssl
+    smtpserver = zimbra.cs.ucla.edu
+    smtpuser = eggert
+    smtpserverport = 465
+526-day $ pwd
+/home/eggert/src/gnu/emacs/cs97
+527-day $ cat .git/config
+[core]
+    repositoryformatversion = 0
+    filemode = true
+    bare = false
+    logallrefupdates = true
+[remote "origin"]
+    url = /home/eggert/src/gnu/emacs/master
+    fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "master"]
+    remote = origin
+    merge = refs/heads/master
+...
+529-day $ git show 0a982c077e7393d865622ff780906a0cb252348d | cat
+commit 0a982c077e7393d865622ff780906a0cb252348d
+Author: Stephen Gildea <stepheng+emacs@gildea.com>
+Date:   Wed Apr 29 07:36:07 2020 -0700
+
+    Test iso8601-parse-zone vs format-time-string %z
+   
+    * test/lisp/calendar/iso8601-tests.el
+    (iso8601-format-time-string-zone-round-trip): New unit test that
+    format-time-string %z and iso8601-parse-zone are inverses.
+    (test-iso8601-format-time-string-zone-round-trip): New helper function.
+
+diff --git a/test/lisp/calendar/iso8601-tests.el b/test/lisp/calendar/iso8601-tests.el
+index e8b155a7aa..c835f5792b 100644
+--- a/test/lisp/calendar/iso8601-tests.el
++++ b/test/lisp/calendar/iso8601-tests.el
+@@ -232,6 +232,37 @@
+   (should (equal (iso8601-parse-time "15:27:46-05")
+                  '(46 27 15 nil nil nil nil nil -18000))))
+ 
++
++(defun test-iso8601-format-time-string-zone-round-trip (offset-minutes z-format)
++  "Pass OFFSET-MINUTES to format-time-string with Z-FORMAT, a %z variation,
++and then to iso8601-parse-zone.  The result should be the original offset."
++  (let* ((offset-seconds (* 60 offset-minutes))
++         (zone-string (format-time-string z-format 0 offset-seconds))
++         (offset-rt
++          (condition-case nil
++              (iso8601-parse-zone zone-string)
++            (wrong-type-argument (format "(failed to parse %S)" zone-string))))
++         ;; compare strings that contain enough info to debug failures
++         (success (format "%s(%s) -> %S -> %s"
++                          z-format offset-minutes zone-string offset-minutes))
++         (actual (format "%s(%s) -> %S -> %s"
++                         z-format offset-minutes zone-string offset-rt)))
++    (should (equal success actual))))
++
++(ert-deftest iso8601-format-time-string-zone-round-trip ()
++  "Round trip zone offsets through format-time-string and iso8601-parse-zone.
++Passing a time zone created by format-time-string %z to
++iso8601-parse-zone should yield the original offset."
++  (dolist (offset-minutes
++           (list
++            ;; compare hours (1- and 2-digit), minutes, both, neither
++            (* 5 60) (* 11 60) 5 11 (+ (* 5 60) 30) (+ (* 11 60) 30) 0
++            ;; do negative values, too
++            (* -5 60) (* -11 60) -5 -11 (- (* -5 60) 30) (- (* -11 60) 30)))
++    (dolist (z-format '("%z" "%:z" "%:::z"))
++      (test-iso8601-format-time-string-zone-round-trip
++       offset-minutes z-format))))
++
+ (ert-deftest standard-test-date-and-time-of-day ()
+   (should (equal (iso8601-parse "19850412T101530")
+           '(30 15 10 12 4 1985 nil -1 nil)))
+530-day $ wc $(git ls-files)
+       27        58       628 .clang-format
+       30       116      1324 .dir-locals.el
+       98       333      2882 .gitattributes
+      292       471      5050 .gitignore
+       67       302      2339 .gitlab-ci.yml
+       26       166       932 BUGS
+      416      2742     18240 CONTRIBUTE
+...
+       74       332      2933 test/src/xml-tests.el
+  4183719  18779788 155995009 total
+531-day $ git diff 520fd3e728d46702a04f6a19f23ed64a66900d51..2f9bfaef21043d7894334b33b8538a165250f499 | cat
+diff --git a/lisp/env.el b/lisp/env.el
+index c2cf0888eb..6de90385a3 100644
+--- a/lisp/env.el
++++ b/lisp/env.el
+@@ -68,10 +68,10 @@ with a character not a letter, digit or underscore; otherwise, enclose
+ the entire variable name in braces.  For instance, in `ab$cd-x',
+ `$cd' is treated as an environment variable.
+ 
+-If WHEN-UNDEFINED is nil, references to undefined environment variables
+-are replaced by the empty string; if it is a function, the function is called
+-with the variable name as argument and should return the text with which
+-to replace it or nil to leave it unchanged.
++If WHEN-UNDEFINED is omitted or nil, references to undefined environment
++variables are replaced by the empty string; if it is a function, the
++function is called with the variable's name as argument, and should return
++the text with which to replace it, or nil to leave it unchanged.
+ If it is non-nil and not a function, references to undefined variables are
+ left unchanged.
+ 
+532-day $ git diff 2f9bfaef21043d7894334b33b8538a165250f499^! | cat
+diff --git a/lisp/env.el b/lisp/env.el
+index c2cf0888eb..6de90385a3 100644
+--- a/lisp/env.el
++++ b/lisp/env.el
+@@ -68,10 +68,10 @@ with a character not a letter, digit or underscore; otherwise, enclose
+ the entire variable name in braces.  For instance, in `ab$cd-x',
+ `$cd' is treated as an environment variable.
+ 
+-If WHEN-UNDEFINED is nil, references to undefined environment variables
+-are replaced by the empty string; if it is a function, the function is called
+-with the variable name as argument and should return the text with which
+-to replace it or nil to leave it unchanged.
++If WHEN-UNDEFINED is omitted or nil, references to undefined environment
++variables are replaced by the empty string; if it is a function, the
++function is called with the variable's name as argument, and should return
++the text with which to replace it, or nil to leave it unchanged.
+ If it is non-nil and not a function, references to undefined variables are
+ left unchanged.
+ 
+...
+541-day $ git diff b56401f3849cf6d00717ab8a64a221f2c01455a6..HEAD  . | cat
+diff --git a/test/lisp/calendar/iso8601-tests.el b/test/lisp/calendar/iso8601-tests.el
+index e8b155a7aa..c835f5792b 100644
+--- a/test/lisp/calendar/iso8601-tests.el
++++ b/test/lisp/calendar/iso8601-tests.el
+@@ -232,6 +232,37 @@
+   (should (equal (iso8601-parse-time "15:27:46-05")
+                  '(46 27 15 nil nil nil nil nil -18000))))
+ 
++
++(defun test-iso8601-format-time-string-zone-round-trip (offset-minutes z-format)
++  "Pass OFFSET-MINUTES to format-time-string with Z-FORMAT, a %z variation,
++and then to iso8601-parse-zone.  The result should be the original offset."
++  (let* ((offset-seconds (* 60 offset-minutes))
++         (zone-string (format-time-string z-format 0 offset-seconds))
++         (offset-rt
++          (condition-case nil
++              (iso8601-parse-zone zone-string)
++            (wrong-type-argument (format "(failed to parse %S)" zone-string))))
++         ;; compare strings that contain enough info to debug failures
++         (success (format "%s(%s) -> %S -> %s"
++                          z-format offset-minutes zone-string offset-minutes))
++         (actual (format "%s(%s) -> %S -> %s"
++                         z-format offset-minutes zone-string offset-rt)))
++    (should (equal success actual))))
++
++(ert-deftest iso8601-format-time-string-zone-round-trip ()
++  "Round trip zone offsets through format-time-string and iso8601-parse-zone.
++Passing a time zone created by format-time-string %z to
++iso8601-parse-zone should yield the original offset."
++  (dolist (offset-minutes
++           (list
++            ;; compare hours (1- and 2-digit), minutes, both, neither
++            (* 5 60) (* 11 60) 5 11 (+ (* 5 60) 30) (+ (* 11 60) 30) 0
++            ;; do negative values, too
++            (* -5 60) (* -11 60) -5 -11 (- (* -5 60) 30) (- (* -11 60) 30)))
++    (dolist (z-format '("%z" "%:z" "%:::z"))
++      (test-iso8601-format-time-string-zone-round-trip
++       offset-minutes z-format))))
++
+ (ert-deftest standard-test-date-and-time-of-day ()
+   (should (equal (iso8601-parse "19850412T101530")
+           '(30 15 10 12 4 1985 nil -1 nil)))
+542-day $ git diff HEAD^! --  # latest vs previous
+diff --git a/test/lisp/calendar/iso8601-tests.el b/test/lisp/calendar/iso8601-tests.el
+index e8b155a7aa..c835f5792b 100644
+--- a/test/lisp/calendar/iso8601-tests.el
++++ b/test/lisp/calendar/iso8601-tests.el
+@@ -232,6 +232,37 @@
+   (should (equal (iso8601-parse-time "15:27:46-05")
+                  '(46 27 15 nil nil nil nil nil -18000))))
+ 
++
++(defun test-iso8601-format-time-string-zone-round-trip (offset-minutes z-format)
++  "Pass OFFSET-MINUTES to format-time-string with Z-FORMAT, a %z variation,
++and then to iso8601-parse-zone.  The result should be the original offset."
++  (let* ((offset-seconds (* 60 offset-minutes))
+:
++         (zone-string (format-time-string z-format 0 offset-seconds))
+:q
+
+
+Version control
+
+  alternatives to Git, mostly history
+
+    SCCS - Source Code Control System - Bell Labs, 1972
+      used in Unix as it scaled up
+      (SNOBOL, for OS/360 IBM mainframe)
+      rewrote it in C, mutated, prospered
+      Each file F has a corresponding history file s.F
+        This is more efficient than merely copying each version of F
+    s.F contains metadata, but its body
+      contains the text lines of all versions of F,
+        with (some, most) duplicate lines removed
+      interspersed with directives saying which version(s)
+        the following set of text lines came from.
+      You can compute a version by making a single pass through the body.
+        Tuned for small computers (16-byte address space)
+         cost of retrieving latest version O(|s.F|)
+       metadata includes delta table
+       checksum for reliability - recover by going to backups
+       proprietary - like Unix
+       many imitators
+
+   RCS - Revision Control System, Purdue 1982
+       open-source
+       different sort of optimization
+         F source file
+     vs RCS/F,v history file
+        history file: contained a byte-for-byte copy of F’s most recent
+          version
+        followed by a reverse delta:
+          changes needed to compute previous version
+          delta:
+           insert this line
+           delete that line
+        followed by more reverse deltas.
+     Cost of retrieving latest version O(|F|)
+        let’s make common actions faster
+        problem - like SCCS, histories were per-file.
+      changes to one file were atomic:
+        create a new history file ’RCS/F,new’
+           write to it a copy of RCS/F,v  with some minor changes
+           ‘mv RCS/F,new RCS/F,v’ is your commit
+               F,v files are read-only
+           a single change crossing file boundaries? watch out.
+
+    CVS - Concurrent Version System, VU Amsterdam, 1985
+       RCS front end to:
+         handle commits crossing file boundaries
+     client/server approach
+        CVS server keeps track of history
+        clients can retrieve and make changes
+        server does the commits
+         collaboration across the Internet
+      Linux kernel, GNU apps started off with CVS
+      performance issues
+      collaboration issues
+         single-server - bottleneck
+        reliability if server goes down
+        should we make one person in charge?
+     distributed version control
+        many servers, each with own copy of repository
+          copies might not match (downside)
+          more reliability
+          distributed control
+    Subversion does this,
+    BitKeeper (commercial) does it better, but it’s commercial as of 2005
+    Torvalds decided to build his own system - Git
+
+Basic techniques used these version systems (including Git)
+
+  Compression - representing history in a small space
+     Compression works on any stream of data (version control included)
+     (not concatenate all versions)
+     Family of compressors: gzip, zlib, etc. use two basic ideas
+       Huffman coding - David Huffman, MIT, 1952
+       You want to represent this:
+         ABBAAAAACAAAAABAAAAAAAACDAAAAA
+       If you use ASCII, it’s 7 bits per character.
+       A narrower encoding would be better.
+         00 - A
+     01 - B
+     10 - C
+     11 - D
+
+     00 01 01 00 00 00 00 ...
+          A  B  B  A  A  A  A
+
+     You can do even better, by using a *variable width encoding*
+     Give more-popular symbols fewer bits.
+
+        0 - A
+    10 - B
+    110 - C
+    111 - D
+
+         0 10 10 0 0 0 0 ...
+
+     0 or 1 selects from a subtree of possible symbols
+     Come up with an optimal subtree for a set of symbols
+     with known popularity.
+     Find the least popular symbol, and kick it off the island.
+     basic step: find the least-popular pair, package it together
+        popularity is the sum of its children
+     repeat until you’ve built a tree
+
+   For an English-language text file, you can compute popularity
+      of letters in English, communicate this tree to sender and
+      receiver, as long as they agree they can communicate
+      compressed version.
+   This is called static Huffman encoding (table is known, doesn’t change).
+   Dynamic Huffman encoding adapts the table to the text.
+      Sender & receiver start off not knowing table.
+      Evenly-balanced table (bushy tree - all characters represented by
+        same number of bits - plain ASCII, in effect 128 chars, 7 bits)
+      Receiver computes popularity of characters as they’re received.
+        It mutates its own table accordingly - tree is updated
+      as it receives characters.
+         0001011 is an A a t first
+          it evolves
+         0001 is an A, other characters have moved to get worse encodings
+      Sender knows this, updates copy of table on sender side.
+         gzip does both
+       algorithm for updating the table is well known standardized
+       Internet RFC for gzip
+
+      .tar.gz file (.tgz)
+        Use tar to serialize a directory hierarchy
+      tar walk through a filesystem tree
+      outputs files and metainfo as it goes in a serial stream of bytes
+      it can also receive a serialized stream of files and metainfo
+         to reconstruct a copy
+      plain .tar file is pretty big - copy of everything
+
+           tar -cf - a.c b.c c.c | gzip >foo.tar.gz
+       tar -czf foo.tar.gz a.c b.c c.c # equivalent
+
+   Simple, very small memory (256 entries in a tree)
+
+  Dictionary compression
+    Huffman encoding is symbol-based - converts fixed-width symbols
+                      into a variable-bit encoding
+    it’s optimal under its own rules (if your frequency is right)
+    let’s change the rules
+
+    Dictionary compression converts sequences of input symbols (“words”)
+       into fixed-width (but hopefully smaller) output symbols
+      Four score and seven and more years ago and that’s enough.
+        4    3    1    7    1   6    2     0   1   8       9
+        Sender and receiver must know the dictionary
+           0 - "ago "
+           1 - "and "
+           2 - "years "
+           3 - "score "
+           4 - "Four "
+           ...
+           9 - "enough. "
+
+           etc
+       Let’s say dictionary contains 65,536 (2**16) words. Then
+       each word takes only 2 bytes.  This saves space.
+       This takes more memory than Huffman coding.
+       But it can compress considerably better.
+
+     It can work dynamically.
+    Sender and receiver start off with empty dictionaries.
+    They agree on updating their dictionaries as the message goes through.
+    There is a way to say "here’s a new word".
+
+  These two ideas can be combined.
+
+      Dictionary compression to get a sequence of word numbers,
+      THEN Huffman-encode the word numbers
+
+      gzip etc. do this
+
+  Delta compression
+     We have the old version in our system
+     We want to commit a new version
+       Do this efficently by just storing the changes.
+       ‘diff -u old new’ outputs a “delta”, typically much shorter than original
+
+take a break
+resume at 11:12
+
+Review of the basics (first five minutes)
+
+  git clone - copies a repository
+       git init - new repository (not that common)
+  [edit the file with Emacs]
+  git diff - lists all changes to any file from most recent commit
+  git diff FILE - list changes to FILE
+  git diff A..B - list changes between commit A and commit B
+  git diff A..B FILE - limits output to the changes in FILE
+  git diff A..B -- FILE - same, but unambigous
+
+  git add FILE - copies FILE into your index (“staging area”) future commit
+  git diff FILE - now says nothing!
+      git diff --cached FILE -- compare to most recent commit instead
+  git commit - installs change into repository by adding to the history
+
+  git pull - pull recent changes from upstream repository merges into your
+      repository; kinda complicated, explain more later
+
+  git reset X - forget about all the changes we’ve made, go back to version X
+  git reset --hard X - turn off all the warnings that you’ll lose your file
+
+Git internals brief review / intro
+
+   Plumbing vs porcelain
+     Plumbing makes your house work. You need those pipes for water!
+     Beautiful bathrooms - porcelain sink a lot of it is for looks
+        and for familiarity
+
+  Brief introduction to plumbing
+    The .git subdirectory
+      contains the repository - all your old versions contents + metadata
+      It’s more important than your source files in some sense.
+      Commit early and often, so that .git stays important.
+      - It can be anywhere (not necessarily ‘.git’); configurable.
+      - You can do without the source files in some cases.
+          a “bare repository”
+      We’ll stick with the usual situation.
+
+   .git subdirectory
+      branches - empty subdirectory (obsolete)
+      config - This repository’s configuration.
+         [remote ...] upstream repositories
+     [branch ...] branches for this repository
+      HEAD - specifies where your default branch is
+
+
+Branches and what they’re for.
+
+ * v1, v2, v3, v4, as sequential history: simple
+      appropriate if there’s just one developer who always knows what they’re
+         doing
+      This is a single branch - timeline or a history of a project
+
+ * We might have a program that’s big and has major releases
+   but people keep wanting to run the old releases
+     compatibility issues
+     cheapness
+     inertia
+
+   v1 --- v2 ---- v3 ---- v4 ---- v5----v6--v6.1
+                   |      v4.1 ----- 4.2---v4.2.1
+                   |
+           v3.1 ---- v3.2 ---- v3.3---v3.3.1---v3.3.2
+
+    6.1 has a security fix
+      we apply 6..6.1 changes to older branches to fix same bugs there
+      “backporting a fix”  “cherry-picking a fix”
+
+    3.3.1 has a security fix
+      we want to merge the 3.3.1..3.3.2 fix into more-recent branches
+      “merge” because it’s often automatable
+
+  * We might have alternative views of the future.
+       Team A + Team B each in their own branch.
+
+  * More common: “feature branches”
+       Team A adds feature A (new files, and a few changes to old ones).
+       Team B adds feature B (new files, and a few changes to old ones).
+    Team A finishes, merges its branch into master
+    Team B finishes, "  "  "  " , if its changes collide with A’s,
+       a manual process to fix it.
+
+  * Forking - team dispute, splits project, now two competing projects
+      FreeBSD vs OpenBSD
+
+More git later - look for Homework 3 (publish later today)
+   toy but complete version of project
+
+
+
+shell transcript follows
+
+501-day pwd/home/eggert/class/cs97/2020−spring/2020−05−05502−day cd HOME/src/gnu/emacs503−day ls
+32x              emacs-25-tmp0  emacs-ttt-copy  master-tmr
+accurate-warning-pos  emacs-25-tmp1  flo         master-tms
+build              emacs-25-tmp2  foo         static-checkinf
+cs97              emacs-26         gnulib         static-checking
+d              emacs-26-sc    mastercd         t
+emacs-24          emacs-26-tmp   master-tmp      tmp
+emacs-24-sc          emacs-27         master-tmp1     trunk
+emacs-25          emacs-27-sc    master-tmp2     xwidget
+emacs-25-sc          emacs-test     master-tmp3
+emacs-25-tmp          emacs-ttt      master-tmq
+504-day cdmaster505−day cd ..
+506-day gitclonemastercs97−2020−05−05Cloninginto′cs97−2020−05−05′...done.Checkingoutfiles:100 cd cs97-2020-05-05/
+508-day ls−altotal7128drwxr−xr−x20eggerteggert4096May511:30.drwxr−xr−x42eggerteggert4096May511:30..drwxr−xr−x8eggerteggert4096May511:30admin−rwxr−xr−x1eggerteggert11053May511:30autogen.sh−rw−r−−r−−1eggerteggert932May511:30BUGSdrwxr−xr−x3eggerteggert4096May511:30build−aux−rw−r−−r−−1eggerteggert478613May511:30ChangeLog.1−rw−r−−r−−1eggerteggert1310339May511:30ChangeLog.2−rw−r−−r−−1eggerteggert4967171May511:30ChangeLog.3−rw−r−−r−−1eggerteggert628May511:30.clang−format−rw−r−−r−−1eggerteggert14870May511:30config.bat−rw−r−−r−−1eggerteggert200972May511:30configure.ac−rw−r−−r−−1eggerteggert18240May511:30CONTRIBUTE−rw−r−−r−−1eggerteggert35149May511:30COPYING−rw−r−−r−−1eggerteggert1324May511:30.dir−locals.eldrwxr−xr−x7eggerteggert4096May511:30docdrwxr−xr−x14eggerteggert4096May511:30etcdrwxr−xr−x8eggerteggert4096May511:30.git−rw−r−−r−−1eggerteggert2882May511:30.gitattributes−rw−r−−r−−1eggerteggert5050May511:30.gitignore−rw−r−−r−−1eggerteggert2339May511:30.gitlab−ci.yml−rw−r−−r−−1eggerteggert4382May511:30GNUmakefile−rw−r−−r−−1eggerteggert31940May511:30INSTALL−rw−r−−r−−1eggerteggert4170May511:30INSTALL.REPOdrwxr−xr−x5eggerteggert4096May511:30leimdrwxr−xr−x2eggerteggert4096May511:30libdrwxr−xr−x2eggerteggert4096May511:30lib−srcdrwxr−xr−x26eggerteggert12288May511:30lispdrwxr−xr−x2eggerteggert4096May511:30lwlibdrwxr−xr−x2eggerteggert4096May511:30m4−rwxr−xr−x1eggerteggert14875May511:30make−dist−rw−r−−r−−1eggerteggert45393May511:30Makefile.indrwxr−xr−x2eggerteggert4096May511:30modulesdrwxr−xr−x3eggerteggert4096May511:30msdosdrwxr−xr−x5eggerteggert4096May511:30nextstepdrwxr−xr−x4eggerteggert4096May511:30ntdrwxr−xr−x2eggerteggert4096May511:30oldXMenu−rw−r−−r−−1eggerteggert6125May511:30READMEdrwxr−xr−x3eggerteggert12288May511:30srcdrwxr−xr−x7eggerteggert4096May511:30test509−day cd .git
+510-day pwd/home/eggert/src/gnu/emacs/cs97−2020−05−05/.git511−day cd ..
+512-day lsadminChangeLog.3etclib−srcmodulessrcautogen.shconfig.batGNUmakefilelispmsdostestBUGSconfigure.acINSTALLlwlibnextstepbuild−auxCONTRIBUTEINSTALL.REPOm4ntChangeLog.1COPYINGleimmake−distoldXMenuChangeLog.2doclibMakefile.inREADME513−day pwd
+/home/eggert/src/gnu/emacs/cs97-2020-05-05
+514-day ./autogen.shCheckingwhetheryouhavethenecessarytools...(ReadINSTALL.REPOformoredetailsonbuildingEmacs)Checkingforautoconf(needatleastversion2.65)...okYoursystemhastherequiredtools.Buildingaclocal.m4...Running′autoreconf−fi−Im4′...Configuringlocalgitrepository...′.git/config′−>′.git/config. 1 ′gitconfigtransfer.fsckObjects′true′gitconfigdiff.cpp.xfuncname′![]∗[A−Za−z][A−Za−z0−9]∗:[[:space:]]∗(|/[/*])
+^((::[[:space:]]*)?[A-Za-z_][A-Za-z_0-9]*[[:space:]]*\(.*)^((#define[[:space:]]|DEFUN).*)'
+git config diff.elisp.xfuncname '^\([^[:space:]]*def[^[:space:]]+[[:space:]]+([^()[:space:]]+)'
+git config diff.m4.xfuncname '^((m4_)?define|A._DEFUN(_ONCE)?)\([^),]*'
+git config diff.make.xfuncname '^([$.[:alnum:]_].*:|[[:alnum:]_]+[[:space:]]*([*:+]?[:?]?|!?)=|define .*)'
+git config diff.shell.xfuncname '^([[:space:]]*[[:alpha:]_][[:alnum:]_]*[[:space:]]*|[[:alpha:]_][[:alnum:]_]*=)'
+git config diff.texinfo.xfuncname '^@node[[:space:]]+([^,[:space:]][^,]+)'
+Installing git hooks...
+'build-aux/git-hooks/commit-msg' -> '.git/hooks/commit-msg'
+'build-aux/git-hooks/pre-commit' -> '.git/hooks/pre-commit'
+'build-aux/git-hooks/prepare-commit-msg' -> '.git/hooks/prepare-commit-msg'
+'.git/hooks/applypatch-msg.sample' -> '.git/hooks/applypatch-msg'
+'.git/hooks/pre-applypatch.sample' -> '.git/hooks/pre-applypatch'
+You can now run './configure'.
+515-day pwd/home/eggert/src/gnu/emacs/cs97−2020−05−05516−day cd .git
+517-day ls−ltotal420drwxr−xr−x2eggerteggert4096May511:30branches−rw−r−−r−−1eggerteggert909May511:34config−rw−r−−r−−1eggerteggert258May511:34config. 1 −rw−r−−r−−1eggerteggert73May511:30description−rw−r−−r−−1eggerteggert23May511:30HEADdrwxr−xr−x2eggerteggert4096May511:34hooks−rw−r−−r−−1eggerteggert372703May511:34indexdrwxr−xr−x2eggerteggert4096May511:30infodrwxr−xr−x3eggerteggert4096May511:30logsdrwxr−xr−x260eggerteggert4096May511:30objects−rw−r−−r−−1eggerteggert13701May511:30packed−refsdrwxr−xr−x5eggerteggert4096May511:30refs518−day
+
+
+ Homework 3 - simple application
+    project warmup (whole toy, rather than part of a larger system)
+
+Aside on shell
+  ^x^y   to Bash; run previous command but replace x with y first
+  !!     redo last command
+  !xy    redo last xy command
+
+‘make’ is a build tool
+   You could use a shell script to build
+      gcc -c x.c
+      gcc -c y.c
+      gcc x.o y.o -o foo
+    But: if it fails you must start from scratch; this is slow
+      makefile contains rules each rule is a shell script snippet.
+      Rule says: (1) here’s the file to build (2) here’s the files you need
+                         to build it, (3) here’s shell snippet
+        Makefile:
+       x.o: x.c header.h
+            gcc -c x.c
+       y.o: y.c header.h
+            gcc -c y.c
+       foo: x.o y.o
+            gcc x.o y.o -o foo
+          $ make
+     ‘make’ knows the dependency graph, do it can do builds in parallel ||
+         make -j5  (my home machine has 4 CPUs)
+     ‘make’ is in some sense too simple
+        (can you compute dependencies automatically)?
+    GCC will output dependencies as it compiles
+      chicken-and-egg problem here
+     ‘automake’ - preprocessor for ‘make’
+
+Brief review+
+
+  basic workflow
+    git clone (get a copy of repository from somewhere else)
+       when it’s a local clone, it’s often faster than you might expect.
+         because it uses hard links to deduplicate across repositories
+     used in a lot of places
+       repository is under .git
+    build the system (Emacs autogen.sh - other ‘bootstrap’, ...)
+         shell script to make the build easy
+     then run ‘make’
+
+Git imposes a philosophy change on large-software developers
+  You’re not writing a program (or a set of modules).
+  You’re writing a *patch* to a program (or a set of patches).
+  Your goal is to come up with good clean patches.
+    good - add functionality, fix bugs, etc.
+    clean - other developers can read the patches and know what
+        they mean.
+      - you want the bugs to be *compartmentalized*
+         - split up large patches into small ones
+         - each individual patch is buildable, each works
+         - whole series of patches does what you want
+         - lets you isolate bugs much more quickly
+
+Therefore, beware of:
+   git commit -mfoo *  # Ouch!
+   git commit -a -mfoo # Ouch!
+   git add .  # Ouch!
+   ‘git add x.c’ limits patch size.
+
+git commit just changes your repository, *not* upstream.
+If you’ve cloned A to B, and commit into B, A is unaffected.
+   git diff A..B - difference between A and B
+   git diff B^! - difference between B and previous version
+
+Commits can be identified in several ways
+   full id 5e43faa906a16bc6e99ab902cfb0a0cf206045b3
+   unambiguous prefix of full id 5e43faa, say
+   arithmetic on commits  C^ - C’s parent   C^^ - C’s grandparent  C~3 ...
+   symbolic names HEAD   branches   tags (names for commits)
+
+
+restart at 11:05
+
+   .git/objects - bulk of repository
+   .git/config - your configuration options
+   .git/hooks - hook scripts
+   .git/index - staging area for “next” commit
+   .git/logs - reflogs - records of your most recent changes
+   .git/objects - actual repository data
+   .git/packed-refs - optimized versions of refs
+   .git/refs - tips of branches tags (map symbolic names of commits to actual names)
+
+Git objects
+
+   Think of Git as a file system (set files) built
+     atop the POSIX (Linux/macOS/etc.) filesystem
+     many of the Git notions are the same
+       Git object ~ POSIX file
+       Git directories ~ POSIX directories
+     extra features designed/tuned for version control
+       We need a *commit* - an all-or-nothing change
+         to our entire software system
+       We need more metainfo than filesystems give
+
+   Simplest object in Git: (sort of like simplest file in POSIX)
+      blob - sequence of bytes    (like a POSIX regular file)
+        blobs are hashed SHA-1 checksum
+      SHA-1 is hard to forge (very hard to come up with a
+        different blob contents that hash to the same value)
+      checksum is the the name of the blob
+      It’s a “unique” identifier for the blob contents.
+      Git objects have types,
+        blob object is a simple type - just a sequence of bytes
+
+   Next object: trees (in Git) are like directories in POSIX filesystem
+       tree = collection of entries, each with:
+          name (string)
+      type (type of object being named: blob, tree, ...)
+      mode (octal number, like POSIX permissions:
+                100644 - normal file
+            100755 - executable,
+            120000 - symlink, ..)
+          SHA-1 hash of the named object.
+
+      Simplest way to update a tree is via the index
+         (i.e., the staging area)
+
+   Commits
+      metainfo about other objects (author, timestamp)
+      tell you about the other object, gives a log message, etc.
+
+   Internal format of objects (say, a blob)
+      "blob 18\0Arma virumque cano"
+     Internal representation of the blob
+      SHA-1 checksum is of this string
+      compress the string using zlib (gzip library)
+      write compressed version to the file xx/xxxxxxxxxxxxxxxxxxxxxxxxx
+            "blob 44\0Arma virumque cano\nArms and the man I sing\n"
+
+Git branches
+
+   Branch - lightweight movable pointer to a commit.
+   Default branch is ‘master’.
+
+      git branch - lists branches
+      git branch xxx - creates a new branch xxx, points to HEAD
+      git checkout xxx - switches to branch xxx (changes HEAD)
+         updates all working files accordingly
+        deletes/adds/changes them as necessary
+      git checkout -f xxx - SWITCH TO BRANCH xxx REGARDLESS
+      git commit - creates a commit, updates HEAD accordingly
+                 - updates xxx to match
+      git branch -d xxx - deletes branch xxx (are you sure?)
+      git branch -D xxx - DELETES BRANCH xxx
+      git branch -m xxx yyy - renames branch xxx
+
+--- shell transcript ---
+
+501-day cdHOME/src/gnu/emacs
+502-day gitcloneemacscs97−2020−05−07fatal:repository′emacs′doesnotexist503−day ^emacs^master
+git clone master cs97-2020-05-07
+Cloning into 'cs97-2020-05-07'...
+done.
+Checking out files: 100% (4041/4041), done.
+504-day cdcs97−2020−05−06bash:cd:cs97−2020−05−06:Nosuchfileordirectory505−day cd cs97-2020-05-07
+506-day lsadminChangeLog.3etclib−srcmodulessrcautogen.shconfig.batGNUmakefilelispmsdostestBUGSconfigure.acINSTALLlwlibnextstepbuild−auxCONTRIBUTEINSTALL.REPOm4ntChangeLog.1COPYINGleimmake−distoldXMenuChangeLog.2doclibMakefile.inREADME507−day cd .git
+508-day pwd/home/eggert/src/gnu/emacs/cs97−2020−05−07/.git509−day ls -l
+total 416
+drwxr-xr-x   2 eggert eggert   4096 May  7 10:04 branches
+-rw-r--r--   1 eggert eggert    258 May  7 10:04 config
+-rw-r--r--   1 eggert eggert     73 May  7 10:04 description
+-rw-r--r--   1 eggert eggert     23 May  7 10:04 HEAD
+drwxr-xr-x   2 eggert eggert   4096 May  7 10:04 hooks
+-rw-r--r--   1 eggert eggert 372703 May  7 10:04 index
+drwxr-xr-x   2 eggert eggert   4096 May  7 10:04 info
+drwxr-xr-x   3 eggert eggert   4096 May  7 10:04 logs
+drwxr-xr-x 260 eggert eggert   4096 May  7 10:04 objects
+-rw-r--r--   1 eggert eggert  13701 May  7 10:04 packed-refs
+drwxr-xr-x   5 eggert eggert   4096 May  7 10:04 refs
+510-day du8./info144./objects/52264./objects/2332./objects/36104./objects/88...344./objects/bc552704./objects8./refs/heads4./refs/tags8./refs/remotes/origin12./refs/remotes28./refs8./logs/refs/heads8./logs/refs/remotes/origin12./logs/refs/remotes24./logs/refs32./logs4./branches52./hooks553224.511−day cd objects
+512-day ls000e1c2a38465462707e8c9aa8b6c4d2e0eefc010f1d2b39475563717f8d9ba9b7c5d3e1effd02101e2c3a48566472808e9caab8c6d4e2f0fe03111f2d3b49576573818f9dabb9c7d5e3f1ff0412202e3c4a58667482909eacbac8d6e4f2info0513212f3d4b59677583919fadbbc9d7e5f3pack061422303e4c5a68768492a0aebccad8e6f4071523313f4d5b69778593a1afbdcbd9e7f508162432404e5c6a788694a2b0beccdae8f609172533414f5d6b798795a3b1bfcddbe9f70a18263442505e6c7a8896a4b2c0cedceaf80b19273543515f6d7b8997a5b3c1cfddebf90c1a28364452606e7c8a98a6b4c2d0deecfa0d1b29374553616f7d8b99a7b5c3d1dfedfb513−day ls -l
+total 1040
+drwxr-xr-x 2 eggert eggert  4096 May  7 10:04 00
+drwxr-xr-x 2 eggert eggert  4096 May  7 10:04 01
+drwxr-xr-x 2 eggert eggert  4096 May  7 10:04 02
+...drwxr-xr-x 2 eggert eggert  4096 May  7 10:04 fe
+drwxr-xr-x 2 eggert eggert  4096 May  7 10:04 ff
+drwxr-xr-x 2 eggert eggert  4096 May  7 10:04 info
+drwxr-xr-x 2 eggert eggert 12288 May  7 10:04 pack
+514-day cdff515−day ls -l
+total 400
+-r--r--r--  4 eggert eggert  35129 Apr 16 11:59 125b137cfa2ec2c01144c2ef195c5706ed810d
+-r--r--r--  7 eggert eggert   1142 Apr  5 01:24 481dd6e0b51173ff7f026cb35f7ca5b9a26c23
+-r--r--r--  7 eggert eggert    306 Mar 19 09:28 67037b94fda87a721c53961ac319793913e3f1
+-r--r--r--  7 eggert eggert   1140 Feb 23 16:15 693d98880470a1280651a6ee408a553248bdd4
+-r--r--r--  3 eggert eggert   8726 May  2 12:07 6964461bccde1c769d08f3270afabb77554834
+-r--r--r--  7 eggert eggert     91 Mar 19 09:28 6b8e864aa8e64a48e4382c214a6f852d31c688
+-r--r--r-- 10 eggert eggert    241 Sep 22  2019 7560b6ffba3d8602debd9a2a5c47509a67d4be
+-r--r--r--  7 eggert eggert    307 Jan 20 00:01 79ab125e5fddd452c6d5e4524a65d4af79b838
+-r--r--r--  7 eggert eggert   1141 Jan 27 21:54 927a2ca0c44f02efcb38fdbc50220602c3101d
+-r--r--r--  3 eggert eggert   5375 May  3 15:10 b7a6a49c2826e88d87a8e16793b159822ac44a
+-r--r--r--  7 eggert eggert   8695 Jan 20 00:01 b841621a9aa98b2543361d681b0fdb693f3220
+-r--r--r--  4 eggert eggert    163 Apr 22 18:37 c3b8585dfb2a5c8a2b7dd0d5a9e844a97ced00
+-r--r--r--  4 eggert eggert 101891 Apr  9 20:15 cb9cf0a1a8664c45c6854738c8f24da559b4c6
+-r--r--r--  7 eggert eggert  27848 Jan 23 23:24 cdafcb317f7aa5ec364548522c4e78a00426ca
+-r--r--r-- 10 eggert eggert   2001 Sep 22  2019 d51d638c5bcabd319522b400d9365a19f78717
+-r--r--r--  7 eggert eggert   1144 Jan 23 23:24 d9b49f7c97d33d8f2a909785654bd28220bd8f
+-r--r--r--  4 eggert eggert  92061 Apr 16 11:59 e2f607e52bf4ab1cc6e820fc27135df95b8660
+-r--r--r--  7 eggert eggert  70011 Mar  8 10:50 e79559a3f0fd15465fb91e0ca672e519ac96c8
+516-day pwd/home/eggert/src/gnu/emacs/cs97−2020−05−07/.git/objects/ff517−day cd ../../..
+518-day pwd/home/eggert/src/gnu/emacs/cs97−2020−05−07519−day ls -l
+total 7092
+drwxr-xr-x  8 eggert eggert    4096 May  7 10:04 admin
+-rwxr-xr-x  1 eggert eggert   11053 May  7 10:04 autogen.sh
+-rw-r--r--  1 eggert eggert     932 May  7 10:04 BUGS
+drwxr-xr-x  3 eggert eggert    4096 May  7 10:04 build-aux
+-rw-r--r--  1 eggert eggert  478613 May  7 10:04 ChangeLog.1
+-rw-r--r--  1 eggert eggert 1310339 May  7 10:04 ChangeLog.2
+-rw-r--r--  1 eggert eggert 4967171 May  7 10:04 ChangeLog.3
+-rw-r--r--  1 eggert eggert   14870 May  7 10:04 config.bat
+-rw-r--r--  1 eggert eggert  200972 May  7 10:04 configure.ac
+-rw-r--r--  1 eggert eggert   18240 May  7 10:04 CONTRIBUTE
+-rw-r--r--  1 eggert eggert   35149 May  7 10:04 COPYING
+drwxr-xr-x  7 eggert eggert    4096 May  7 10:04 doc
+drwxr-xr-x 14 eggert eggert    4096 May  7 10:04 etc
+-rw-r--r--  1 eggert eggert    4382 May  7 10:04 GNUmakefile
+-rw-r--r--  1 eggert eggert   31940 May  7 10:04 INSTALL
+-rw-r--r--  1 eggert eggert    4170 May  7 10:04 INSTALL.REPO
+drwxr-xr-x  5 eggert eggert    4096 May  7 10:04 leim
+drwxr-xr-x  2 eggert eggert    4096 May  7 10:04 lib
+drwxr-xr-x  2 eggert eggert    4096 May  7 10:04 lib-src
+drwxr-xr-x 26 eggert eggert   12288 May  7 10:04 lisp
+drwxr-xr-x  2 eggert eggert    4096 May  7 10:04 lwlib
+drwxr-xr-x  2 eggert eggert    4096 May  7 10:04 m4
+-rwxr-xr-x  1 eggert eggert   14875 May  7 10:04 make-dist
+-rw-r--r--  1 eggert eggert   45393 May  7 10:04 Makefile.in
+drwxr-xr-x  2 eggert eggert    4096 May  7 10:04 modules
+drwxr-xr-x  3 eggert eggert    4096 May  7 10:04 msdos
+drwxr-xr-x  5 eggert eggert    4096 May  7 10:04 nextstep
+drwxr-xr-x  4 eggert eggert    4096 May  7 10:04 nt
+drwxr-xr-x  2 eggert eggert    4096 May  7 10:04 oldXMenu
+-rw-r--r--  1 eggert eggert    6125 May  7 10:04 README
+drwxr-xr-x  3 eggert eggert   12288 May  7 10:04 src
+drwxr-xr-x  7 eggert eggert    4096 May  7 10:04 test
+520-day makeThereseemstobeno"configure"fileinthisdirectory.Running./autogen.sh..../autogen.shCheckingwhetheryouhavethenecessarytools...(ReadINSTALL.REPOformoredetailsonbuildingEmacs)Checkingforautoconf(needatleastversion2.65)...okYoursystemhastherequiredtools.Buildingaclocal.m4...Running′autoreconf−fi−Im4′...Configuringlocalgitrepository...′.git/config′−>′.git/config. 1 ′gitconfigtransfer.fsckObjects′true′gitconfigdiff.cpp.xfuncname′![]∗[A−Za−z][A−Za−z0−9]∗:[[:space:]]∗(|/[/*])
+^((::[[:space:]]*)?[A-Za-z_][A-Za-z_0-9]*[[:space:]]*\(.*)^((#define[[:space:]]|DEFUN).*)'
+git config diff.elisp.xfuncname '^\([^[:space:]]*def[^[:space:]]+[[:space:]]+([^()[:space:]]+)'
+git config diff.m4.xfuncname '^((m4_)?define|A._DEFUN(_ONCE)?)\([^),]*'
+git config diff.make.xfuncname '^([$.[:alnum:]_].*:|[[:alnum:]_]+[[:space:]]*([*:+]?[:?]?|!?)=|define .*)'
+git config diff.shell.xfuncname '^([[:space:]]*[[:alpha:]_][[:alnum:]_]*[[:space:]]*|[[:alpha:]_][[:alnum:]_]*=)'
+git config diff.texinfo.xfuncname '^@node[[:space:]]+([^,[:space:]][^,]+)'
+Installing git hooks...
+'build-aux/git-hooks/commit-msg' -> '.git/hooks/commit-msg'
+'build-aux/git-hooks/pre-commit' -> '.git/hooks/pre-commit'
+'build-aux/git-hooks/prepare-commit-msg' -> '.git/hooks/prepare-commit-msg'
+'.git/hooks/applypatch-msg.sample' -> '.git/hooks/applypatch-msg'
+'.git/hooks/pre-applypatch.sample' -> '.git/hooks/pre-applypatch'
+You can now run './configure'.
+"configure" file built.
+There seems to be no Makefile in this directory.
+Running ./configure ...
+./configure
+checking for xcrun... no
+checking for GNU Make... make
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking for gcc... gcc
+checking whether the C compiler works... yes
+...
+config.status: creating src/config.h
+config.status: executing src/epaths.h commands
+make[1]: Entering directory '/home/eggert/src/gnu/emacs/cs97-2020-05-07'
+make[1]: Leaving directory '/home/eggert/src/gnu/emacs/cs97-2020-05-07'
+config.status: executing src/.gdbinit commands
+config.status: executing doc/emacs/emacsver.texi commands
+config.status: executing etc-refcards-emacsver.tex commands
+configure: WARNING: This configuration installs a 'movemail' program
+that does not retrieve POP3 email.  By default, Emacs 25 and earlier
+installed a 'movemail' program that retrieved POP3 email via only
+insecure channels, a practice that is no longer recommended but that
+you can continue to support by using './configure --with-pop'.
+configure: You might want to install GNU Mailutils
+<https://mailutils.org> and use './configure --with-mailutils'.
+Makefile built.
+make -f Makefile
+make[1]: Entering directory '/home/eggert/src/gnu/emacs/cs97-2020-05-07'
+make -C lib all
+make[2]: Entering directory '/home/eggert/src/gnu/emacs/cs97-2020-05-07/lib'
+  GEN      alloca.h
+  GEN      dirent.h
+...
+make[3]: Leaving directory '/home/eggert/src/gnu/emacs/cs97-2020-05-07/doc/misc'
+  GEN      info/dir
+make[2]: Leaving directory '/home/eggert/src/gnu/emacs/cs97-2020-05-07'
+make[1]: Leaving directory '/home/eggert/src/gnu/emacs/cs97-2020-05-07'
+521-day pwd/home/eggert/src/gnu/emacs/cs97−2020−05−07522−day src/emacs
+...
+526-day git diff 153241d664f45d832a4564bb53d7f75a0af2c35f..02f5a419fdcfb3fb6c8a3e4debe7224010b40227 | cat diff --git a/src/bignum.h b/src/bignum.h index ad9021f15f..4a906c3c0e 100644 --- a/src/bignum.h +++ b/src/bignum.h @@ -108,7 +108,8 @@ bignum_integer (mpz_t *tmp, Lisp_Object i)    if (FIXNUMP (i))      {        mpz_set_intmax (*tmp, XFIXNUM (i)); -      return tmp; +      /* The unnecessary cast pacifies a buggy GCC 4.8.5.  */ +      return (mpz_t const *) tmp;      }    return xbignum_val (i);  } 527-day git diff 02f5a419fdcfb3fb6c8a3e4debe7224010b40227^!  | cat
+diff --git a/src/bignum.h b/src/bignum.h
+index ad9021f15f..4a906c3c0e 100644
+--- a/src/bignum.h
++++ b/src/bignum.h
+@@ -108,7 +108,8 @@ bignum_integer (mpz_t *tmp, Lisp_Object i)
+   if (FIXNUMP (i))
+     {
+       mpz_set_intmax (*tmp, XFIXNUM (i));
+-      return tmp;
++      /* The unnecessary cast pacifies a buggy GCC 4.8.5.  */
++      return (mpz_t const *) tmp;
+     }
+   return xbignum_val (i);
+ }
+528-day gitdiff5e43faa906a16bc6e99ab902cfb0a0cf206045b3!|catdiff−−gita/lisp/version.elb/lisp/version.elindex24da21c731..ac7a4dbbcb100644−−−a/lisp/version.el+++b/lisp/version.el@@−62,7+62,7@@emacs−versiontothesystemconfiguration;lookat‘system−configuration′instead."(interactive"P")(let((version−string−(format"GNUEmacs git diff HEAD^! | cat
+diff --git a/lisp/version.el b/lisp/version.el
+index 24da21c731..ac7a4dbbcb 100644
+--- a/lisp/version.el
++++ b/lisp/version.el
+@@ -62,7 +62,7 @@ emacs-version
+ to the system configuration; look at `system-configuration' instead."
+   (interactive "P")
+   (let ((version-string
+-         (format "GNU Emacs %s (build %s, %s%s%s%s)%s"
++         (format "Eggmacs %s (build %s, %s%s%s%s)%s"
+                  emacs-version
+                  emacs-build-number
+          system-configuration
+530-day gitdiff5e43faa!|catdiff−−gita/lisp/version.elb/lisp/version.elindex24da21c731..ac7a4dbbcb100644−−−a/lisp/version.el+++b/lisp/version.el@@−62,7+62,7@@emacs−versiontothesystemconfiguration;lookat‘system−configuration′instead."(interactive"P")(let((version−string−(format"GNUEmacs pwd
+/home/eggert/src/gnu/emacs/cs97-2020-05-07
+532-day cd.git533−day ls -l
+total 424
+drwxr-xr-x   2 eggert eggert   4096 May  7 10:04 branches
+-rw-r--r--   1 eggert eggert     26 May  7 10:35 COMMIT_EDITMSG
+-rw-r--r--   1 eggert eggert    909 May  7 10:10 config
+-rw-r--r--   1 eggert eggert    258 May  7 10:10 config.~1~
+-rw-r--r--   1 eggert eggert     73 May  7 10:04 description
+-rw-r--r--   1 eggert eggert     23 May  7 10:04 HEAD
+drwxr-xr-x   2 eggert eggert   4096 May  7 10:10 hooks
+-rw-r--r--   1 eggert eggert 372703 May  7 10:35 index
+drwxr-xr-x   2 eggert eggert   4096 May  7 10:04 info
+drwxr-xr-x   3 eggert eggert   4096 May  7 10:04 logs
+drwxr-xr-x 260 eggert eggert   4096 May  7 10:04 objects
+-rw-r--r--   1 eggert eggert  13701 May  7 10:04 packed-refs
+drwxr-xr-x   5 eggert eggert   4096 May  7 10:04 refs
+534-day ls−lhookstotal72−r−xr−xr−x1eggerteggert478May710:10applypatch−msg−rwxr−xr−x1eggerteggert478May710:04applypatch−msg.sample−r−xr−xr−x1eggerteggert4594May710:10commit−msg−rwxr−xr−x1eggerteggert896May710:04commit−msg.sample−rwxr−xr−x1eggerteggert3327May710:04fsmonitor−watchman.sample−rwxr−xr−x1eggerteggert189May710:04post−update.sample−r−xr−xr−x1eggerteggert424May710:10pre−applypatch−rwxr−xr−x1eggerteggert424May710:04pre−applypatch.sample−r−xr−xr−x1eggerteggert2491May710:10pre−commit−rwxr−xr−x1eggerteggert1642May710:04pre−commit.sample−r−xr−xr−x1eggerteggert1305May710:10prepare−commit−msg−rwxr−xr−x1eggerteggert1492May710:04prepare−commit−msg.sample−rwxr−xr−x1eggerteggert1348May710:04pre−push.sample−rwxr−xr−x1eggerteggert4898May710:04pre−rebase.sample−rwxr−xr−x1eggerteggert544May710:04pre−receive.sample−rwxr−xr−x1eggerteggert3610May710:04update.sample535−day ls -l index
+-rw-r--r-- 1 eggert eggert 372703 May  7 10:35 index
+536-day ls−ltotal424drwxr−xr−x2eggerteggert4096May710:04branches−rw−r−−r−−1eggerteggert26May710:35COMMITEDITMSG−rw−r−−r−−1eggerteggert909May710:10config−rw−r−−r−−1eggerteggert258May710:10config. 1 −rw−r−−r−−1eggerteggert73May710:04description−rw−r−−r−−1eggerteggert23May710:04HEADdrwxr−xr−x2eggerteggert4096May710:10hooks−rw−r−−r−−1eggerteggert372703May710:35indexdrwxr−xr−x2eggerteggert4096May710:04infodrwxr−xr−x3eggerteggert4096May710:04logsdrwxr−xr−x260eggerteggert4096May710:04objects−rw−r−−r−−1eggerteggert13701May710:04packed−refsdrwxr−xr−x5eggerteggert4096May710:04refs537−day pwd
+/home/eggert/src/gnu/emacs/cs97-2020-05-07/.git
+538-day cd../..539−day ls
+32x              d            emacs-25-tmp0  emacs-27       foo        master-tmp3     t
+accurate-warning-pos  emacs-24        emacs-25-tmp1  emacs-27-sc       gnulib    master-tmq     tmp
+build              emacs-24-sc   emacs-25-tmp2  emacs-test       master    master-tmr     trunk
+cs97              emacs-25        emacs-26       emacs-ttt       master-tmp    master-tms     xwidget
+cs97-2020-05-05       emacs-25-sc   emacs-26-sc    emacs-ttt-copy  master-tmp1    static-checkinf
+cs97-2020-05-07       emacs-25-tmp  emacs-26-tmp   flo           master-tmp2    static-checking
+540-day pwd/home/eggert/src/gnu/emacs541−day cd ../..
+...
+543-day mkdircs97544−day cd cs97
+545-day ls546−day ls -al
+total 8
+drwxr-xr-x  2 eggert eggert 4096 May  7 11:17 .
+drwxr-xr-x 70 eggert eggert 4096 May  7 11:17 ..
+547-day echo′Armavirumquecano.′|githash−object−−stdin24b390b0e3489b71977f5c7242a4679287349242...550−day ls -al
+total 8
+drwxr-xr-x  2 eggert eggert 4096 May  7 11:17 .
+drwxr-xr-x 70 eggert eggert 4096 May  7 11:17 ..
+551-day gitinitaeneidInitializedemptyGitrepositoryin/home/eggert/src/cs97/aeneid/.git/552−day ls -al
+total 12
+drwxr-xr-x  3 eggert eggert 4096 May  7 11:20 .
+drwxr-xr-x 70 eggert eggert 4096 May  7 11:17 ..
+drwxr-xr-x  3 eggert eggert 4096 May  7 11:20 aeneid
+553-day cdaeneid554−day ls -al
+total 12
+drwxr-xr-x 3 eggert eggert 4096 May  7 11:20 .
+drwxr-xr-x 3 eggert eggert 4096 May  7 11:20 ..
+drwxr-xr-x 7 eggert eggert 4096 May  7 11:20 .git
+555-day ls−al.gittotal40drwxr−xr−x7eggerteggert4096May711:20.drwxr−xr−x3eggerteggert4096May711:20..drwxr−xr−x2eggerteggert4096May711:20branches−rw−r−−r−−1eggerteggert92May711:20config−rw−r−−r−−1eggerteggert73May711:20description−rw−r−−r−−1eggerteggert23May711:20HEADdrwxr−xr−x2eggerteggert4096May711:20hooksdrwxr−xr−x2eggerteggert4096May711:20infodrwxr−xr−x4eggerteggert4096May711:20objectsdrwxr−xr−x4eggerteggert4096May711:20refs556−day ls -al .git/objects
+total 16
+drwxr-xr-x 4 eggert eggert 4096 May  7 11:20 .
+drwxr-xr-x 7 eggert eggert 4096 May  7 11:20 ..
+drwxr-xr-x 2 eggert eggert 4096 May  7 11:20 info
+drwxr-xr-x 2 eggert eggert 4096 May  7 11:20 pack
+557-day echo 'Arma virumque cano.' | git hash-object --stdin -w # write into repository 24b390b0e3489b71977f5c7242a4679287349242 558-day ls -al .git/objects
+total 20
+drwxr-xr-x 5 eggert eggert 4096 May  7 11:22 .
+drwxr-xr-x 7 eggert eggert 4096 May  7 11:20 ..
+drwxr-xr-x 2 eggert eggert 4096 May  7 11:22 24
+drwxr-xr-x 2 eggert eggert 4096 May  7 11:20 info
+drwxr-xr-x 2 eggert eggert 4096 May  7 11:20 pack
+559-day !!/24ls−al.git/objects/24total12drwxr−xr−x2eggerteggert4096May711:22.drwxr−xr−x5eggerteggert4096May711:22..−r−−r−−r−−1eggerteggert36May711:22b390b0e3489b71977f5c7242a4679287349242560−day cat .git/objects/24/b390b0e3489b71977f5c7242a4679287349242
+... binary data ...
+
+561-day gitcat−file−p24b390b0e3489b71977f5c7242a4679287349242Armavirumquecano.562−day git cat-file -t 24b390b0e3489b71977f5c7242a4679287349242
+blob
+563-day pwd/home/eggert/src/cs97/aeneid564−day cd HOME/src/gnu/emacs565−day ls
+32x              d            emacs-25-tmp0  emacs-27       foo        master-tmp3     t
+accurate-warning-pos  emacs-24        emacs-25-tmp1  emacs-27-sc       gnulib    master-tmq     tmp
+build              emacs-24-sc   emacs-25-tmp2  emacs-test       master    master-tmr     trunk
+cs97              emacs-25        emacs-26       emacs-ttt       master-tmp    master-tms     xwidget
+cs97-2020-05-05       emacs-25-sc   emacs-26-sc    emacs-ttt-copy  master-tmp1    static-checkinf
+cs97-2020-05-07       emacs-25-tmp  emacs-26-tmp   flo           master-tmp2    static-checking
+566-day cdcs97−2020−05−07567−day git cat-file -p HEAD
+tree 688449cb8cc5560350c7ed05eb3586122c177f45
+parent 02f5a419fdcfb3fb6c8a3e4debe7224010b40227
+author Paul Eggert <eggert@cs.ucla.edu> 1588872952 -0700
+committer Paul Eggert <eggert@cs.ucla.edu> 1588872952 -0700
+
+Give Emacs a better name.
+568-day C−cC−cC568−day git cat-file -p 'HEAD^{tree}'
+100644 blob 7895ada36da80b2667f5f1929465d4534e023ebf    .clang-format
+100644 blob 27d50c6069940d49aff1599fe2750e8c53f17857    .dir-locals.el
+100644 blob 00f434da7ce95d3028be865ba313dc55dd3a703b    .gitattributes
+100644 blob d4be6bb23ebe4510d5acfa47478905c60abe1e03    .gitignore
+100644 blob 9a62137c168e3b441fef64eb196a451d283a89c4    .gitlab-ci.yml
+100644 blob ee473213c89cdd394408ccdadabb12b6f2fde2b3    BUGS
+100644 blob d9502dcac35e026fdab8792c666e71058c494d6e    CONTRIBUTE
+100644 blob f288702d2fa16d3cdf0035b15a9fcbc552cd88e7    COPYING
+100644 blob 08343f0fd41fda4ebb8d26df2c6c9d37298ad43f    ChangeLog.1
+100644 blob 9e875c561db316e2a60675dbc76c09283d72c7f7    ChangeLog.2
+100644 blob 7f6000fc5568250aed20068ff992d38fb1013151    ChangeLog.3
+100644 blob c6407d0491857988df030a3b3d0f82bd1ea222bf    GNUmakefile
+100644 blob f1ceb2c1bf84de68ff5bd13c807af2fc56138139    INSTALL
+100644 blob da0c220c2bd61951d3c354b1b999171c683d37bf    INSTALL.REPO
+100644 blob 67e15cfecd24333d6f39683cabda0e36c28bd26b    Makefile.in
+100644 blob 3d499a3596d6f12bd2f8ad5ea029b9480dff2275    README
+040000 tree d1d1588f0ade9faad338486c6db5e9758b49ca9d    admin
+100755 blob c5e14900d68c03c920b43eff8062a0c90106781f    autogen.sh
+040000 tree 1f18a615dfcf13e8cf0c0ddbcc1bec4b3c7362af    build-aux
+100644 blob 6938e55671105e1f9ce949ae2fa7331d79a8ca5b    config.bat
+100644 blob 719eb747ae16399ee470537e83c1eaf711eaf7fe    configure.ac
+040000 tree 514291e4712a33fbf3185210a77b268b8c4330ff    doc
+040000 tree 78f0f2ddd65c384b953bf08a6eab03d6bb777213    etc
+040000 tree bf342c6ec5ccf16adade2912516584c33945d6f7    leim
+040000 tree e4be84dbb03ff90fbd16954a0a6e9b1fb2b353f5    lib-src
+040000 tree ffb7a6a49c2826e88d87a8e16793b159822ac44a    lib
+040000 tree 6b48d192aa047e54eeac2327bcba8cf575362291    lisp
+040000 tree 92520938b61288cd5768d47c727ad50ebaccb98a    lwlib
+040000 tree eecc29acdac0a25646ea33be6f624b64600ba242    m4
+100755 blob 6901a4cfa1c677375e38c0bbd53ebe546b0076b2    make-dist
+040000 tree fc18c8b44693cfcd7abd1beca0804ef4d6d642f8    modules
+040000 tree 3da317fa9f452ff4fa4ee07d18654e8a09bd0bfa    msdos
+040000 tree d0b5ce1db5b1d0a735dcb58c3ae87eef657f1419    nextstep
+040000 tree 78da48ab70d76fda87a8d04e58dc2622a8b567b6    nt
+040000 tree 7f02999655d5c9beb322a74160075616c50c5321    oldXMenu
+040000 tree 91e1717ebb1cb56e4cf308b04d1b1adfafdf7734    src
+040000 tree 572e3d059d58776323729fde323edc5fb835a389    test
+569-day git cat-file -p '514291e4712a33fbf3185210a77b268b8c4330ff^{tree}' 040000 tree 3054d45119e854d9988891e2eec2b1a4e005079f    emacs 040000 tree 08c32aed3bfecaa64860839c8d6e829e8220a502    lispintro 040000 tree 1a835f00c1da2b52cbc71c336ce2a0d2e9e927fc    lispref 040000 tree b23abb78f6119a47995513a4d089bce84d1994e1    man 040000 tree 8112e367bab50ed3447b4b51bd5652ae89e1f6dc    misc 570-day pwd
+/home/eggert/src/gnu/emacs/cs97-2020-05-07
+571-day cd−/home/eggert/src/gnu/emacs572−day cd /home/eggert/src/cs97/aeneid
+573-day ls574−day ls -al
+total 12
+drwxr-xr-x 3 eggert eggert 4096 May  7 11:20 .
+drwxr-xr-x 3 eggert eggert 4096 May  7 11:20 ..
+drwxr-xr-x 7 eggert eggert 4096 May  7 11:20 .git
+575-day echo′Armavirumquecano,Troiaequiprimusaboris′>aeneid.txt576−day git hash-object -w aeneid.txt
+afae7ae15a49f71d6332ab1d6b2b1bb37e0dba6e
+577-day ls.git/objects/24afinfopack578−day echo 'Italiam fato profugus Laviniaque venit' >>aeneid.txt
+579-day githash−object−waeneid.txt6b0f75fbaf59a8d95a393a070410379a87485c50580−day git cat-file -p 6b0f75fbaf59a8d95a393a070410379a87485c50
+Arma virumque cano, Troiae qui primus ab oris
+Italiam fato profugus Laviniaque venit
+581-day gitupdate−index−−add−−cacheinfo1006446b0f75fbaf59a8d95a393a070410379a87485c50aeneid.txt582−day git write-tree
+3bbb1bb6bb3c40c2817b5324759cb33641ccbe1b
+583-day gitcat−file−p3bbb1bb6bb3c40c2817b5324759cb33641ccbe1b100644blob6b0f75fbaf59a8d95a393a070410379a87485c50aeneid.txt584−day git cat-file -p 3bbb1bb6bb3c40c2817b5324759cb33641ccbe1b^{tree}
+100644 blob 6b0f75fbaf59a8d95a393a070410379a87485c50    aeneid.txt
+
+Aside;
+  #F next version of F, if you save
+  .#F symlink to nowhere, telling Emacs who’s editing F.
+
+Version control and git
+Client-server
+
+Git and branches
+  Separate lines of development in same project
+
+  Basic problem:
+    Ancestor version A, two branches from it B, C
+    One way to think about:
+       diff A B > A-B.diff
+       diff A C > A-C.diff
+       merge A-B.diff and A-C.diff into a single .diff
+
+       patch X <Y-Z.diff - apply the patch from Y to Z, to the file X in place
+
+    git merge B - merge branch B into current branch  C
+       looks for common ancestor A
+       computes diff between A and B
+       applies this diff to C
+          could be conflicts
+      resolve them by hand via a text editor etc.
+      finish the merge by committing it
+       merges have multiple parents
+       Merges respect history - each separate line of development
+          is kept recorded
+
+  Rebasing
+    Typically you have a small set of changes
+    You’re maintaining them and want to keep them up to date
+      with respect to the master.
+    Eventually you want to apply them to the master.
+
+  Timestamps
+    git rebase --ignore-datte
+    git commit (you can specify 1998 if you want to)
+
+  Remote repositories
+    Distributed version control (advance over client-server)
+       Client-server: one master repository, guarded by server
+         (GitHub does this by default.)
+    A bunch of repositories scattered around the internet
+    Nobody’s the master (at least in theory)
+      Linus Torvalds’s copy is pretty important for Linux kernel
+    From your point of view, you have a repository
+    How do you keep track of your colleagues’ repositories.
+    git remote - lists your “remotes” -- remote repositories
+    git remote -v - lists in more detail
+    git fetch - fetch changes from remote repository into yours
+         does *not* merge; updates your repository
+    git pull = git fetch + git merge
+
+Client-server next time.
+
+---- shell transcript ----
+
+501-day $ ls
+'#2020-05-12-notes.txt#'   2020-05-12-notes.txt   a   b   c
+502-day $ mv a A
+503-day $ mv b B
+504-day $ mv c C
+505-day $ ls
+'#2020-05-12-notes.txt#'   2020-05-12-notes.txt   A   B   C
+506-day $ diff A B >A-B.diff
+507-day $ diff A C >A-C.diff
+508-day $ ls
+'#2020-05-12-notes.txt#'   A          A-C.diff     C
+ 2020-05-12-notes.txt       A-B.diff   B
+509-day $ diff -u A B >A-B.diff
+510-day $ diff -u A C >A-C.diff
+511-day $ cp A D1
+512-day $ patch D1 <A-B.diff
+patching file D1
+513-day $ diff B D1
+514-day $ patch D1 <A-C.diff
+patching file D1
+515-day $ diff -u A Cbad >A-Cbad.diff
+516-day $ cp A Dbad
+517-day $ patch Dbad <A-B.diff
+patching file Dbad
+518-day $ patch Dbad <A-Cbad.diff
+patching file Dbad
+Hunk #1 FAILED at 1.
+1 out of 1 hunk FAILED -- saving rejects to file Dbad.rej
+519-day $ diff3 B A C
+====1
+1:1c
+  4
+2:1c
+3:1c
+  Four
+====1
+1:4c
+  7
+2:4c
+3:4c
+  seven
+====3
+1:10a
+2:10a
+3:11,13c
+  on
+  this
+  continent
+520-day $ diff3 -m B A C
+4
+score
+and
+7
+years
+ago
+our
+fathers
+brought
+forth
+on
+this
+continent
+521-day $ diff3 -m B A Cbad
+<<<<<<< B
+4
+score
+||||||| A
+Four
+score
+=======
+Four
+*20
+>>>>>>> Cbad
+and
+7
+years
+ago
+our
+fathers
+brought
+forth
+522-day $ pwd
+/home/eggert/class/cs97/2020-spring/2020-05-12
+523-day $ git init
+Initialized empty Git repository in /home/eggert/class/cs97/2020-spring/2020-05-12/.git/
+524-day $ ls -al
+total 68
+drwxr-xr-x  3 eggert eggert 4096 May 12 10:34  .
+drwxr-xr-x 13 eggert eggert 4096 May 12 09:51  ..
+lrwxrwxrwx  1 eggert eggert   26 May 12 10:00  .#2020-05-12-notes.txt -> eggert@day.2557:1589302181
+-rw-r--r--  1 eggert eggert  526 May 12 10:26 '#2020-05-12-notes.txt#'
+-rw-r--r--  1 eggert eggert   30 May 12 09:55  2020-05-12-notes.txt
+-rw-r--r--  1 eggert eggert   57 May 12 10:16  A
+-rw-r--r--  1 eggert eggert  148 May 12 10:20  A-B.diff
+lrwxrwxrwx  1 eggert eggert   26 May 12 10:29  .#A-Cbad.diff -> eggert@day.2557:1589302181
+-rw-r--r--  1 eggert eggert  141 May 12 10:30 '#A-Cbad.diff#'
+-rw-r--r--  1 eggert eggert  140 May 12 10:26  A-Cbad.diff
+-rw-r--r--  1 eggert eggert  146 May 12 10:20  A-C.diff
+-rw-r--r--  1 eggert eggert   50 May 12 10:17  B
+-rw-r--r--  1 eggert eggert   75 May 12 10:17  C
+-rw-r--r--  1 eggert eggert   55 May 12 10:25  Cbad
+-rw-r--r--  1 eggert eggert   68 May 12 10:23  D1
+-rw-r--r--  1 eggert eggert   50 May 12 10:26  Dbad
+-rw-r--r--  1 eggert eggert   50 May 12 10:26  Dbad.orig
+-rw-r--r--  1 eggert eggert  140 May 12 10:26  Dbad.rej
+drwxr-xr-x  7 eggert eggert 4096 May 12 10:34  .git
+525-day $ cp A f
+526-day $ git add f
+527-day $ git commit -m'first version' f
+[master (root-commit) 51c3549] first version
+ 1 file changed, 10 insertions(+)
+ create mode 100644 f
+528-day $ cat f
+Four
+score
+and
+seven
+years
+ago
+our
+fathers
+brought
+forth
+529-day $ git checkout -b B
+Switched to a new branch 'B'
+530-day $ cp B f
+531-day $ git diff f | cat
+diff --git a/f b/f
+index eb95594..3d9cd59 100644
+--- a/f
++++ b/f
+@@ -1,7 +1,7 @@
+-Four
++4
+ score
+ and
+-seven
++7
+ years
+ ago
+ our
+532-day $ git commit -m'Branch B' f
+[B f84ce98] Branch B
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+533-day $ git diff HEAD^! | cat
+diff --git a/f b/f
+index eb95594..3d9cd59 100644
+--- a/f
++++ b/f
+@@ -1,7 +1,7 @@
+-Four
++4
+ score
+ and
+-seven
++7
+ years
+ ago
+ our
+534-day $ git log | cat
+commit f84ce983914ea9fd2c8096d0c5a663bac53e63b6
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:36:03 2020 -0700
+
+    Branch B
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:35:18 2020 -0700
+
+    first version
+535-day $ git checkout -b C 51c3549a6527f7fe2b8218e30845672944f45658
+Switched to a new branch 'C'
+536-day $ cp C f
+537-day $ git commit -m'Branch C' f
+[C ea0298a] Branch C
+ 1 file changed, 3 insertions(+)
+538-day $ git | cat
+usage: git [--version] [--help] [-C <path>] [-c <name>=<value>]
+           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]
+           [-p | --paginate | --no-pager] [--no-replace-objects] [--bare]
+           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]
+           <command> [<args>]
+
+These are common Git commands used in various situations:
+
+start a working area (see also: git help tutorial)
+   clone      Clone a repository into a new directory
+   init       Create an empty Git repository or reinitialize an existing one
+
+work on the current change (see also: git help everyday)
+   add        Add file contents to the index
+   mv         Move or rename a file, a directory, or a symlink
+   reset      Reset current HEAD to the specified state
+   rm         Remove files from the working tree and from the index
+
+examine the history and state (see also: git help revisions)
+   bisect     Use binary search to find the commit that introduced a bug
+   grep       Print lines matching a pattern
+   log        Show commit logs
+   show       Show various types of objects
+   status     Show the working tree status
+
+grow, mark and tweak your common history
+   branch     List, create, or delete branches
+   checkout   Switch branches or restore working tree files
+   commit     Record changes to the repository
+   diff       Show changes between commits, commit and working tree, etc
+   merge      Join two or more development histories together
+   rebase     Reapply commits on top of another base tip
+   tag        Create, list, delete or verify a tag object signed with GPG
+
+collaborate (see also: git help workflows)
+   fetch      Download objects and refs from another repository
+   pull       Fetch from and integrate with another repository or a local branch
+   push       Update remote refs along with associated objects
+
+'git help -a' and 'git help -g' list available subcommands and some
+concept guides. See 'git help <command>' or 'git help <concept>'
+to read about a specific subcommand or concept.
+539-day $ git log | cat
+commit ea0298a26d96e63b0804ac5c139102744e8bcb14
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:37:00 2020 -0700
+
+    Branch C
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:35:18 2020 -0700
+
+    first version
+540-day $ git branch
+WARNING: terminal is not fully functional
+-  (press RETURN)q
+541-day $ 541-day $ git branch | cat
+  B
+* C
+  master
+542-day $ git checkout -b cautious B
+Switched to a new branch 'cautious'
+543-day $ git diff B..HEAD | cat
+544-day $ git branch | cat
+  B
+  C
+* cautious
+  master
+545-day $ git merge B
+Already up to date.
+546-day $ git merge C
+Auto-merging f
+hint: Waiting for your editor to close the file...
+Merge made by the 'recursive' strategy.
+ f | 3 +++
+ 1 file changed, 3 insertions(+)
+547-day $ cat f
+4
+score
+and
+7
+years
+ago
+our
+fathers
+brought
+forth
+on
+this
+continent
+548-day $ git log | cat
+commit a513b0f01a86686868509c5b3a3a59d8262ba69f
+Merge: f84ce98 ea0298a
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:39:43 2020 -0700
+
+    Merge branch 'C' into cautious
+   
+    I did the merge!
+
+commit ea0298a26d96e63b0804ac5c139102744e8bcb14
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:37:00 2020 -0700
+
+    Branch C
+
+commit f84ce983914ea9fd2c8096d0c5a663bac53e63b6
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:36:03 2020 -0700
+
+    Branch B
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:35:18 2020 -0700
+
+    first version
+549-day $ git log --pretty=fuller | cat
+commit a513b0f01a86686868509c5b3a3a59d8262ba69f
+Merge: f84ce98 ea0298a
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:39:43 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:39:43 2020 -0700
+
+    Merge branch 'C' into cautious
+   
+    I did the merge!
+
+commit ea0298a26d96e63b0804ac5c139102744e8bcb14
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:37:00 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:37:00 2020 -0700
+
+    Branch C
+
+commit f84ce983914ea9fd2c8096d0c5a663bac53e63b6
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:36:03 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:36:03 2020 -0700
+
+    Branch B
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:35:18 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:35:18 2020 -0700
+
+    first version
+550-day $ git log
+WARNING: terminal is not fully functional
+-  (press RETURN)q
+552-day $ export GIT_PAGER=cat
+553-day $ git log
+commit a513b0f01a86686868509c5b3a3a59d8262ba69f (HEAD -> cautious)
+Merge: f84ce98 ea0298a
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:39:43 2020 -0700
+
+    Merge branch 'C' into cautious
+   
+    I did the merge!
+
+commit ea0298a26d96e63b0804ac5c139102744e8bcb14 (C)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:37:00 2020 -0700
+
+    Branch C
+
+commit f84ce983914ea9fd2c8096d0c5a663bac53e63b6 (B)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:36:03 2020 -0700
+
+    Branch B
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658 (master)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:35:18 2020 -0700
+
+    first version
+554-day $ git checkout master
+Switched to branch 'master'
+555-day $ cp Cbad f
+556-day $ git checkout -b Cbad
+M    f
+Switched to a new branch 'Cbad'
+557-day $ git commit -m'Cbad branch' f
+[Cbad 29df1b8] Cbad branch
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+558-day $ git checkout -b cautious-bad
+Switched to a new branch 'cautious-bad'
+559-day $ git branch
+  B
+  C
+  Cbad
+  cautious
+* cautious-bad
+  master
+560-day $ gitk
+561-day $ cd
+562-day $ cd src/gnu/emacs/master
+563-day $ gitk
+  C-c C-c
+564-day $ git merge B
+merge: B - not something we can merge
+565-day $ git checkout -f master
+Already on 'master'
+Your branch is up to date with 'origin/master'.
+566-day $ git log
+commit 4645430b9287c3f5ae9863d465a5dd4158e313a9 (HEAD -> master, origin/master, origin/HEAD)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Mon May 11 17:41:16 2020 -0700
+
+    Pacify GCC 10.1.0
+   
+    Pacify GCC 10.1.0 so that it does not issue false alarms
+    when Emacs is configured with --enable-gcc-warnings.
+    * src/dispnew.c (clear_glyph_row):
+    * src/fns.c (hash_clear):
+    * src/keyboard.c (append_tab_bar_item):
+    * src/lisp.h (vcopy):
+    * src/xfaces.c (get_lface_attributes_no_remap)
+    (Finternal_copy_lisp_face, realize_default_face):
+    * src/xmenu.c (set_frame_menubar):
+    Work around -Warray-bounds false alarm in GCC 10.1.0.
+    * src/intervals.c (copy_properties):
+    Avoid -Wnull-dereference false alarm in GCC 10.1.0.
+    * src/lisp.h (xvector_contents_addr, xvector_contents):
+    New functions, useful for working around GCC bug 95072.
+...
+567-day $ pwd
+/home/eggert/src/gnu/emacs/master
+568-day $ cd ~/class/cs97/
+569-day $ cd ~/class/cs97/2020-spring/2020-05-12/
+570-day $ ls
+'#2020-05-12-notes.txt#'   A-B.diff        A-C.diff   Cbad   Dbad.orig
+ 2020-05-12-notes.txt      '#A-Cbad.diff#'   B           D1     Dbad.rej
+ A               A-Cbad.diff        C           Dbad   f
+571-day $ ls
+2020-05-12-notes.txt   A-B.diff      A-C.diff  Cbad  Dbad.orig
+2020-05-12-notes.txt~  A-Cbad.diff   B           D1    Dbad.rej
+A               A-Cbad.diff~  C           Dbad  f
+572-day $ git checkout -f master
+Switched to branch 'master'
+573-day $ git log
+commit 51c3549a6527f7fe2b8218e30845672944f45658 (HEAD -> master)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:35:18 2020 -0700
+
+    first version
+574-day $ git checkout -f B
+Switched to branch 'B'
+575-day $ git checkout -b Be-cautious
+Switched to a new branch 'Be-cautious'
+576-day $ git branch
+  B
+* Be-cautious
+  C
+  Cbad
+  cautious
+  cautious-bad
+  master
+577-day $ git merge Cbad
+Auto-merging f
+CONFLICT (content): Merge conflict in f
+Automatic merge failed; fix conflicts and then commit the result.
+578-day $ cat f
+<<<<<<< HEAD
+4
+score
+=======
+Four
+*20
+>>>>>>> Cbad
+and
+7
+years
+ago
+our
+fathers
+brought
+forth
+579-day $ git add f
+580-day $ git status
+On branch Be-cautious
+All conflicts fixed but you are still merging.
+  (use "git commit" to conclude merge)
+
+Changes to be committed:
+
+    modified:   f
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+    2020-05-12-notes.txt
+    2020-05-12-notes.txt~
+    A
+    A-B.diff
+    A-C.diff
+    A-Cbad.diff
+    A-Cbad.diff~
+    B
+    C
+    Cbad
+    D1
+    Dbad
+    Dbad.orig
+    Dbad.rej
+
+581-day $ git commit -m'Yay! finally!'
+[Be-cautious 192a21e] Yay! finally!
+582-day $ git log
+commit 192a21e330139791271e3151b52387bdee5255d9 (HEAD -> Be-cautious)
+Merge: f84ce98 29df1b8
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:57:27 2020 -0700
+
+    Yay! finally!
+
+commit 29df1b8819d8f1ebec2d55e6b5ca868338d40c6e (cautious-bad, Cbad)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:44:10 2020 -0700
+
+    Cbad branch
+
+commit f84ce983914ea9fd2c8096d0c5a663bac53e63b6 (B)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:36:03 2020 -0700
+
+    Branch B
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658 (master)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:35:18 2020 -0700
+
+    first version
+583-day $ git log --pretty=fuller
+commit 192a21e330139791271e3151b52387bdee5255d9 (HEAD -> Be-cautious)
+Merge: f84ce98 29df1b8
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:57:27 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:57:27 2020 -0700
+
+    Yay! finally!
+
+commit 29df1b8819d8f1ebec2d55e6b5ca868338d40c6e (cautious-bad, Cbad)
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:44:10 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:44:10 2020 -0700
+
+    Cbad branch
+
+commit f84ce983914ea9fd2c8096d0c5a663bac53e63b6 (B)
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:36:03 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:36:03 2020 -0700
+
+    Branch B
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658 (master)
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:35:18 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:35:18 2020 -0700
+
+    first version
+584-day $ pwd
+/home/eggert/class/cs97/2020-spring/2020-05-12
+585-day $ git branch
+  B
+* Be-cautious
+  C
+  Cbad
+  cautious
+  cautious-bad
+  master
+586-day $ g checkout -b Brebase
+grep: Brebase: No such file or directory
+587-day $ git checkout -b Brebase B
+Switched to a new branch 'Brebase'
+588-day $ git rebase C
+First, rewinding head to replay your work on top of it...
+Applying: Branch B
+589-day $ git log --pretty=fuller
+commit 387e411d49b6732fc21d1dcada378ddd9307bb95 (HEAD -> Brebase)
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:36:03 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 11:20:44 2020 -0700
+
+    Branch B
+
+commit ea0298a26d96e63b0804ac5c139102744e8bcb14 (C)
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:37:00 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:37:00 2020 -0700
+
+    Branch C
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658 (master)
+Author:     Paul Eggert <eggert@cs.ucla.edu>
+AuthorDate: Tue May 12 10:35:18 2020 -0700
+Commit:     Paul Eggert <eggert@cs.ucla.edu>
+CommitDate: Tue May 12 10:35:18 2020 -0700
+
+    first version
+590-day $ git log
+commit 387e411d49b6732fc21d1dcada378ddd9307bb95 (HEAD -> Brebase)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:36:03 2020 -0700
+
+    Branch B
+
+commit ea0298a26d96e63b0804ac5c139102744e8bcb14 (C)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:37:00 2020 -0700
+
+    Branch C
+
+commit 51c3549a6527f7fe2b8218e30845672944f45658 (master)
+Author: Paul Eggert <eggert@cs.ucla.edu>
+Date:   Tue May 12 10:35:18 2020 -0700
+
+    first version
+591-day $ git rebase --ignore-date #   C-c C-c^C
+591-day $ pwd
+/home/eggert/class/cs97/2020-spring/2020-05-12
+592-day $ git remotes
+git: 'remotes' is not a git command. See 'git --help'.
+
+The most similar command is
+    remote
+593-day $ git remote
+594-day $ cd $HOME/src/gnu/emacs/master
+595-day $ git remote
+origin
+596-day $ git remote -v
+origin    eggert@git.sv.gnu.org:/srv/git/emacs.git (fetch)
+origin    eggert@git.sv.gnu.org:/srv/git/emacs.git (push)
+597-day $ pwd
+/home/eggert/src/gnu/emacs/master
+598-day $ cd ../master-tmp
+599-day $ git remote -v
+origin    /home/eggert/src/gnu/emacs/master (fetch)
+origin    /home/eggert/src/gnu/emacs/master (push)
+600-day $ git remote show origin
+* remote origin
+  Fetch URL: /home/eggert/src/gnu/emacs/master
+  Push  URL: /home/eggert/src/gnu/emacs/master
+  HEAD branch: master
+  Remote branches:
+    emacs-24                     tracked
+    emacs-25                     tracked
+    emacs-25-merge               tracked
+    emacs-26                     tracked
+    emacs-27                     tracked
+    master                       tracked
+    master-bad                   tracked
+    master-bad1                  tracked
+    master-bad2                  tracked
+    master-bad3                  tracked
+    master-bad4                  tracked
+    master-bad5                  tracked
+    master-bad6                  tracked
+    master-bad7                  tracked
+    master-bad8                  tracked
+    master-bad9                  tracked
+    scratch/accurate-warning-pos tracked
+    tmp1                         tracked
+  Local branch configured for 'git pull':
+    master merges with remote master
+  Local ref configured for 'git push':
+    master pushes to master (local out of date)
+601-day $
+
+UCLA CS 97 2020-05-14 lecture
+
+midterm next time - like 1st midterm
+  focus on 2nd third of class
+  lecture, assignments, project
+
+LA survey due today
+
+Submit clones of your repositories! every Tuesday on CCLE
+   as tarballs .tgz
+
+Client-server computing
+
+warning: huuuge topic! Things get faster here.
+  you’ve been using it.
+  review and give some more lower-level details
+  brief intro to CS 118 (networking), etc.
+  You’ll do this in your project, learn on the job.
+  Let’s not lose sight of the forest while we’re working on the trees.
+  Efficiency issues can’t be ignored, though.
+
+Client-server basic model
+  Server - repository of all wisdom - central clearinghouse for app info
+  Client - end-user attached to it, oftentimes - one small node in app
+
+Performance issues in client-server
+
+ 1. Throughput
+    (actions per second done by entire application)
+    To improve throughput, servers can do actions in parallel,
+      or “out of order” - sequencing can be a dubious idea anyway
+
+ 2. Latency
+    (delay client observes between request and response)
+    Clients can *cache* data to improve latency.
+
+ASIDE: Why doesn’t Google use peer-to-peer for everything?
+
+  Security can be a hassle with P2P.
+  Performance too.
+
+Correctness issues in client-server
+  come from performance tricks
+
+    Out-of-order execution doesn’t screw up the application.
+       *Serialization* means even if the server executes out of order,
+       it can still justify its answer by appealing to an in-order
+       execution, and say that it’s OK for it to behave *as if*
+       it executed in order.
+
+    Out-of-date caches don’t screw up the application.
+       You’d like a proof of this, ideally.
+       But apps often put up with *slightly* out-of-date caches,
+         as long as this doesn’t hurt too much.
+     e.g., client caches your bank balance.
+           You withdraw money.
+	   This works 99.9% of the time.
+
+    ....
+
+
+The Internet
+
+   Before the Internet:
+     The telephone system
+     *circuit switching*
+     Preallocate network resources for a phone call (data too)
+     Guaranteed throughput and latency
+
+   One Basic idea of the Internet:
+     *packet switching*
+     Best-effort transmission (no guarantee of thoughput or latency)
+     Divide data into small packets - unit of transmission
+     More-efficient use of limited networks
+     First proposed Paul Baran (RAND Corp. Santa Monica, UCLA alumnus)
+     Packets have *headers* and *payloads*
+       header - metainformation tells network what to do with the packet
+       payload - info from sender to recipient
+     Packets are exchanged via *protocols*
+       Like diplomatic protocols (rules for messages to get through)
+     In practice:
+       - Packets can be lost (network congestion).
+       - Packets can received out of order. (separate routing)
+       - Packets can be duplicated. (mistakes in routing)
+
+Internet protocol suite (.... -> HTTP)
+
+  Basic idea: *layered* suite
+     application layer - for particular apps - e.g., web browsing / HTTP
+     transport layer - data channels (kinda like circuit switching)
+     Internet layer - packets
+     link layer - hardware point-to-point (skip over)
+  OSI has 7 layers - forget ’em
+
+  IP (Internet Protocol)
+    foundation of the Internet protocol suite
+    IPv4 (1983) specified by a team led by Jon Postel (UCLA alumnus)
+      connectionless ; for sending and receiving packets only
+      packet header contains:
+        length in bytes (== octets)
+	protocol number
+	source and destination address (IP addresses - 32-bit numbers)
+	Time-To-Live field (TTL, hop count) TTL drops to zero, your packet dies
+	checksum
+      packet body contains payload
+    IPv6 (1998) has not taken over yet, but it will eventually
+
+  Two important protocols atop IP
+
+    UDP (User Datagram Protocol)
+      designed by David Reed (MIT) in 1983
+      thin layer atop IP
+      for apps that just wanna send packets
+        and can deal with duplication etc
+
+    TCP (Transmission Control Protocol)
+      originally from design by Vint Cerf (UCLA alum!) & Bob Kahn (Princeton?)
+      gives you connections: stream of data and provides:
+        reliable, ordered, error-checked
+      It does:
+        sender divides stream into sequenced packets
+	recipient reassembles packets into stream
+	flow control (sender must slow down to avoid packets getting lost)
+	retransmission
+     TCP is a “pipe on wheels”
+
+   Basis for maaanny other protocols
+      e.g., HTTP is based on TCP
+      e.g., Zoom protocol (proprietary) based on RTP
+        RTP (Real-time Transport Protocol), based on UDP
+         using TCP would cause unacceptable jitter -
+
+The World Wide Web
+
+   Tim Berners-Lee (CERN, 1991)
+
+ Two basic ideas: HTTP and HTML
+    HTTP is the application-level protocol
+    HTTP/1.1 verrry simple (1997) request/response
+
+   HTTP/2 (2015) - improves transport efficiency
+     header compression
+     server push
+     pipelining and multiplexing
+        you can send multiple requests without waiting for responses
+	you might get responses out of order
+	you can use the same connection for multiple sets of
+	  requests and responses
+
+   HTTP/3 (202?)
+      even more multiplexing
+      switches to UDP - to avoid head-of-line blocking delays
+      Rumor has it that Zoom will switch to HTTP/3
+
+  SGML (Standard Generalized Markup Language)
+    markup language for documents (SGML was produced by book publishers)
+    declarative, not imperative
+      Not a series of commands that produce a document.
+      Not a program in a “text processing programming language”.
+    instead, it says what the document IS, and lets implementation
+      figure out how to print it.
+
+       <QUOTE TYPE="example">
+	 OK, <ITALICS>this very text</ITALICS> is part of a block quote.
+       </QUOTE>
+
+       <QUITE> foo bar </QUITE>
+
+      Document-type declarations (DTDs) specifies which markup
+      elements are allowed (DTD is a grammar for a markup language)
+
+  HTML was borrowed from SGML.
+
+     HTML element uses the syntax of SGML
+
+       <quote type="example">
+	 OK, <em>this very text</em> is part of a block quote.
+       </quote>
+
+     An HTML element
+       represents a node in a tree that describes the document that you want.
+       This node is surrounded by *tags*.
+
+         <tagname> .... </tagname>
+
+       You can omit closing tags if they’re obvious in some cases.
+
+         <a> .... <b> .... (implied </b> here) </a>
+
+       YOu can also have single tags that both open and close
+
+         <a />   equivalent to <a></a>.
+
+
+HTML, like SGML, is a textual representation for trees
+
+   HTML
+  HEAD                         BODY
+TITLE META LINK LINK     lots of other stuff
+
+Elements of the tree are
+represented by *tags* surrounding content
+    <tag>   <subtag> .... </subtag>   </tag>
+
+    <tag />  Both start and end of the subtreea
+             (this element has no subtrees)
+
+Elements can have *attributes*
+   attributes associate information with internal nodes of the
+      tree
+
+     <tag attr1="value" attr2="value">   subtree info  </tag>
+
+     <tag attr="value" />
+
+Inside elements, you can have not only subtree
+
+Entities like "&amp;" are low-level text-like entries.
+
+The elements and entities have standard meanings.
+
+Mozilla Development Network (MDN) documents these.
+
+How were these meanings and rules determined?
+  - What attributes a dd element can have?
+  - What subtrees/content can be in an element?
+  - What does the element mean?
+       <p> ssss </p> means a paragraph, but how was this decided?
+
+HTML started by borrowing from traditional publishers,
+  <P> </P> for paragraphs.
+  In 1990s, browser developers invented them on the fly
+     Mosaic / Netscape added them whenever it wanted to,
+       pressure for standardization in industry
+     These elements were standardized by
+       Document Type Definitions (DTDs)
+         - it specifies what elements and entities are allowed
+     - for each element, it specifies what attributes it can have
+         and what content it can have
+       DTD specifies a *grammar* for an HTML document
+       one way to think about it is that DTD is “like” an API
+          contract between web server and a browser
+      if they agree, then the user sees useful text
+
+
+
+Suppose a web page is invalid
+
+     <p> This should <em>really<em> be correct.</p>
+ What should web browser do with this typo.? It treats it as this:
+     <p> This should <em>really<em> be correct.</em></em></p>
+ This strategy is now standardized, DTDs often let you omit
+    closing tags if they can be inferred from later closing tags,
+    following the usual nesting rules.
+
+      <p> The Q&ampA session </p>
+
+  Browser
+
+      <p> The Q&ampA; session </p>
+
+    treat this as a bad entity, and not display it
+        "The Q session" or
+        "The QampA; session" (depends on browser)
+
+Primary design principle:
+
+   Be generous in what you accept, and be strict in what you generate.
+
+
+
+HTML + DTDs
+  The problem is that DTDs evolve too slowly
+     creatures of committees
+     you have an app to build
+     “Write your own DTD?”
+       XML - eXtensible Markup Language
+          core SGML/HTML/etc.-like language
+      standardizes angle brackets, attributes
+      open-ended for various sublanguages relying on extensions
+         HTML+XML HTML following the XML rules
+         MathML (used for equations = LaTeX $xxx$ meets HTML)
+             ...
+        It has succeeded in some areas
+       XML is a way of interchanging data
+         shipping trees across the network “trees on wheels”
+    It hasn’t conquered the world.
+    through HTML 4.01
+ HTML kept evolving without sticking to the XML rules
+   rebellion against formal document specifying DTDs, revised every other year
+     too slow for the Internet
+   HTML 5 is specified via a “living standard”
+     revised quite often to keep up with evolving needs
+      and to fix errors, improve interpretations
+     <video>, <audio>, <canvas> for fancier interactions
+   Not just a format for textual representation of trees
+   It also provides:
+      Document Object Model (DOM)
+      APIs for accessing the DOM
+
+API = Application Programming Interface
+  - standard way to invoke the features of a library
+       long atol (char const *s);
+      API for how to convert strings to integers
+
+Cascading Style Sheets (CSS)
+  goal = better separation between content and presentation.
+    e.g., some browser have small screens, other have large ones
+    e.g., some users will have audio-only browsers, or have color limitation
+           (I use monochrome-only browsers on my cell phone.)
+        both want to see same content
+    presentation will differ
+  "style" = presentation
+  What we want to avoid, is making style decisions everywhere in
+  the document.
+       Avoid:   <p>  This is the <i>only</i> reason to make the change. </p>
+        The <i> element is about *presentation*.
+    But this text is content.
+
+        <p>  This is the <em>only</em> reason to make the change. </p>
+      em means "emphasis"
+
+  In CSS, styles are inherited from one’s parent in the tree that is
+     specified by HTML and is in the DOM.
+  The rules for determining how to present a leaf in the tree
+  are more complicated than "just look at parent, then grandparent, etc."
+  You can get styles from:
+     parent
+     browser
+     user
+     inline from HTML
+        <span style="font-variant: small-caps">gdb</span>
+            GDB (but smaller caps than usual)
+     rules for how to combine style, etc.
+
+JavaScript
+   yet another programming language!? 1990s
+   Why not C++?
+     C++ is a compiled language, we need a C++ compiler inside every browser?
+     users don’t want to wait for compilers
+   Why not Python?
+     Python wasn’t ready yet, and was too heavyweight.
+   We want something reeeally easy to implement inside browsers
+   At its core, it’s like Python except:
+     It’s simpler.
+     It’s even more dynamic than Python.
+        C++ uses type checking at compile time (static checking).
+    Python does type checking at run time (dynamic checking).
+       slower, but more flexiable and easier to implement
+    Python has classes (done dynamically, but every object is in a class
+       and it can’t change its class).
+    JavaScript doesn’t - objects can change their behaviors.
+       This is simpler and even more dynamic than Python.
+  Full-fledged programming language (you know how to program).
+  If you want to do any realistic app with it,
+    you need to use libraries to build these apps.
+    But even when you use these libraries, it’s still somewhat
+      awkward/tedious to build apps involving DOM+HTML.
+
+JSX - extension to JavaScript designed for generating/analyzing HTML
+
+    const header = <h1 lang="en">CS 97 assignment 3</h1>;
+       (translated to JavaScript library calls to create a DOM element
+         root is h1 element, etc.)
+    The JSX extensions can be anywhere that a function call can be used.
+        const header = f(x);
+    JSX produces a React element which can use to fiddle with DOM
+         ReactDOM.render(header, document.getElementByID('root'));
+
+       const language = "en";  --- these will be variables, typically
+       const uclaclass = "CS 97";  --- from some other source
+       const n = 3;
+       const header = <h1 lang={language}>{uclaclass} assignment {n + 1}</h1>;
+
+   This can generate both presentation and content.
+
+DOM - Document Object Model (sidebar)
+
+  each HTML document is a tree
+    easy way to refer to the elements of that tree
+                walk through the tree (e.g., to search it)
+        modify the tree
+   lets you have an API for viewing and manipulating trees that
+      represent documents
+
+
+Browser rendering pipeline
+   Browser downloads web page (HTML, CSS, JavaScript, etc.)
+      (from server to client), excecutes JavaScript,
+      displays on screen, BUT
+   User is impatient, network may be slow, web page may be complicated.
+   Browser will start rendering the web page before it knows how to
+     render everything.
+     It may not have downloaded the entire web page yet.
+     It may have to guess that the rest of the page will take up
+        X amount of space on the screen, and then render what it’s got.
+     This can often occur because of a flaky or slow network.
+     It can occur because your JavaScript code is slow.
+  Some common optimizations by browsers.
+     1. If an element looks like it won’t be on the screen,
+        don’t bother to look inside it.
+     2. If the JavaScript code is in an element that is low priority,
+        don’t execute it now (maybe it won’t be needed).
+     3. Determine (or guess) the overall leyout, then start
+        rendering components of the tree. If you’re lucky, later components
+    will fit into the blank region that you’ve left for it.
+    If not, re-render the page.
+
+  If you’re trying to do a high-performance web page,
+    interactions between rendering engine of the browser
+    and the JavaScript code that you’re writing.
+    Advice: don’t overdo this at first! it’s complicated!
+    Using a smaller web page can be helpful here.
+
+Remember XML? It’s a notation for transmitting trees across the wire.
+It’s complicated <aaaaa> </aaaaa> around every tree. Hard to
+read. JavaScript is not a fan of this. They have their own notation for
+trees. JSON - JavaScript Object Notation:
+
+   { "abc":"def", "xyz":12, ... } describes a JavaScript object
+
+   {"menu": { "id": "file", "popup": { ... } }}
+
+   <menu id="file"> <popup> .... </popup> </menu>
+
+We need to turn to low-level programming (C programming).
+Last homework assignment will be at that level.
+
+
+XML & JSON for interchange last time
+
+Review of Node.js (review for many of you)
+Basic principles that “any” Node-based developer should know
+The bigger picture with Node-based development
+  It’s not just Node; it’s its ecosystem and its competitors
+
+Node.js https://node.js
+  JavaScript runtime environment for asynchronous events
+  Callbacks and event handlers
+    Callback - function C that you pass to subroutine S,
+      expecting it to call that function at the appropriate point
+      Might be called by S directly
+      Might be called by a function called by S (recursively)
+      Might be called after S returns!
+         S can store C into a data structure
+     later, somebody else can call C.
+      powerful notion, can be used to build:
+         exception handlers (what to do when your program divides by zero)
+         lots of other stuff
+    Event handler - function that you specify, that gets called
+       when an “event” occurs.
+    Think of the main program as being an event loop
+    The event loop can be running in a single thread in a larger application
+
+     int main (void)
+     {
+        while (true)
+      {
+         e = wait_for_event (); // CPU can sleep here!
+         e.handle (); // this does the actual work; it does not wait.
+      }
+     }
+
+    The event loop is the main programming construct used to build apps.
+      This is *not* multiple threads.
+      With multiple threads, you have multiple CPUs running simultanenously
+        in your program.  You get parallelism and performance, BUT
+    you also get race condition bugs: one thread modifies a
+    data structure while another thread is using it
+      They can be subtle
+      They can be Heisenbugs - they can happen only rarely,
+         and can be hard to reproduce.
+    SO, you get unreliability (OR, it takes longer to write them,
+       if you want them to be reliable)
+     With multiple threads, you break up your program “vertically”,
+        each thread operates in its own “silo” of data
+    It’s OK of no thread looks at each other’s silo.
+    It’s a real problem if threads need to communicate;
+      communication involves controlled race conditions;
+      the control is a pain.
+
+     With event-based programs, you break up your program “horizontally”.
+     Event handlers can share as much as they want to, because
+       at any given; point of time, only one CPU is operating.
+     The programming catch is that each event handler must be *fast*,
+       so that other event handlers get their fair share of the CPU.
+     Say you want to do A; B; C; D; E
+          { A; B; C; D; E; } is a no-no.
+     Put each of A, B, C, D, E into its own event handler,
+       each can arrange for the next to run eventually.
+
+        int c;
+        while ((c = getchar ()) != EOF)
+      putchar (c);
+
+        This is fine for a thread, but not for an event handlere.
+
+        E1: (responds to input keyboard event)
+       c = e.inputchar()
+       schedule_output(c)
+       very simple - but, there’s no loop here
+
+        E2: (responds to mouse event)
+       c = e.mousedirective()
+       schedule_cursor_move(c)
+       very simple - but, there’s no loop here
+
+      You have to take your conventional program, and turn it inside out
+      to structure it for event handling - OR, write it from the ground
+      up as event-handling code.
+
+   With event handling
+      Race condition problems are fewer.
+        Can still happen, if you program the wrong event handlers.
+    Unusual order of events can trigger a bug in your program.
+        But data won’t mutate in the middle of an event handler.
+      In an event handler, no other handler can be running,
+        so in some sense it’s “atomic”
+    The event handler must arrange for data to be in a good state
+       before it returns.
+    There is no “wait” primitive; you must act.
+      There are no locks, because you don’t need them.
+
+      How do you scale?  You don’t have *threads* in parallel,
+        instead, you have *processes* in parallel.
+    Threads share data structures
+       (one thread can step other’s data, because all data are shared),
+        processes don’t.
+       (the only way process can communicate to another is via
+          pipes, network connections, shared files
+          One process cannot modify another’s variables directly)
+       You scale by having several ‘main’ programs, each running
+         a bunch of callbacks and doing event handling.
+       These processes can be running on different machines in the
+         same rack in the same machine room, or all over the Internet.
+
+      If two events happen at once, one event handler is called;
+         the other event is *queued* in the input queue
+     (events that have arrived but have not been handled yet)
+     typically first-in-first-out (FIFO) to preserve command order
+
+   Example of a multiple process program
+
+
+   Exception handling is one form of how callbacks can be used
+     (error occurs? call the function to handle it)
+     (typical assumption is that errors are rare, and
+      exception handlers don’t have to be that efficient
+      exception handlers can print a diagnostic and exit in some cases)
+   Event handling is a different way of thinking about callbacks
+     Events are not exceptional things in event-based programming;
+       they’re *normal* things, done all the time.
+     Event handlers have to be fast.
+     The program keeps going; it’s not in a bad state.
+
+        E3:
+       counter++;
+       schedule E4 for 0.1 ms from now;
+
+   Suppose an event handler throws an exception, what happens?
+
+     int main (void)
+     {
+        while (true)
+      {
+         e = wait_for_event (); // CPU can sleep here!
+         try {
+           e.handle (); // this does the actual work
+         } catch (Exception x) {
+           put event "error" into the input event queue ();
+         }
+      }
+     }
+
+   This idea is not limited to JavaScript and Node.js
+      Python (Twisted package), asyncio
+      Ruby Event Machine
+      ... etc. ...
+
+
+You can build whatever you want with Node.js
+  You can build a browser, etc.
+  You can build a web server.
+    You’re running JavaScript code on the server, not in the user’s browser.
+      - You’re insulated from ancient browsers because you’re not using
+           their JS engines; a lot of testing needs to be done.
+      - You can run on faster server hardware.
+      - You get more *predictable* performance for the part of your
+           app that runs inside the server.
+  *Lots* of libraries are available
+
+Simple example of a toy server
+  node samplescript.js
+  visited it with Firefox
+    browser debugger (Control-Shift-I)
+    lots of stuff (more on debugging later)
+
+Packages in Node.js
+  Package manager is essential here
+    (for Node, and for everybody else)
+  You need a catalog of available packages
+    Can be central, somewhat-maintained repository
+    Can be your own private catalog, on your own machine,
+      your own server
+  You also need a package manager that knows where catalogs are,
+    and can construct (most of) application out of the
+       packages that you want (they contain most of the code)
+  This package manager needs to record what packages your project needs,
+    plus important metadata about these packages
+      to automate common tasks
+      (e.g., new version of package X comes out; do you want it?)
+  npm - Node package manager
+     maintains your package’s state in a JSON file
+     packages use modules
+       modules depend on other modules
+       These dependencies are the core of npm
+         When you invoke code in a module, all other code should work.
+
+Classic Node:
+  You run app in server, JavaScript code on server side.
+  It can deliver HTML containing scripts (JS code) to the client.
+  This means your JavaScript code is in two categories:
+    server-side
+    client-side (dicier, because of browser compatibility)
+  Client-side vs server-side rendering
+    Rendering - close to display
+  You’d prefer Node itself to decide whether to render on client or server
+    There are many Node add/ons to help you do this.
+    Their goal is to sweep this problem under the rug.
+    BUT you must be careful about performance issues
+      particularly since you commonly test with client and server on your
+        laptop!
+
+Next time - big switch to C and debugging.
+
+----- app.js -----
+
+const http = require('http')
+const ip = '127.0.0.1'
+const port = 3000
+
+const server = http.createServer((request, response) => {
+    response.statusCode = 200
+    response.setHeader = ('Content-Type', 'text/plain')
+    response.end('This is just a toy server.\n')
+})
+
+server.listen(
+    port, ip,
+    () => {
+    console.log(`Server running at http://${ip}:${port}/`)
+    })
+
+----- sample package.json -----
+
+{
+  "name": "test-project",
+  "version": "1.0.0",
+  "description": "A Vue.js project",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "start": "npm run dev",
+    "unit": "jest --config test/unit/jest.conf.js --coverage",
+    "test": "npm run unit",
+    "lint": "eslint --ext .js,.vue src test/unit",
+    "build": "node build/build.js"
+  },
+  "dependencies": {
+    "vue": "^2.5.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^7.1.2",
+    "babel-core": "^6.22.1",
+    "babel-eslint": "^8.2.1",
+    "babel-helper-vue-jsx-merge-props": "^2.0.3",
+    "babel-jest": "^21.0.2",
+    "babel-loader": "^7.1.1",
+    "babel-plugin-dynamic-import-node": "^1.2.0",
+    "babel-plugin-syntax-jsx": "^6.18.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-runtime": "^6.22.0",
+    "babel-plugin-transform-vue-jsx": "^3.5.0",
+    "babel-preset-env": "^1.3.2",
+    "babel-preset-stage-2": "^6.22.0",
+    "chalk": "^2.0.1",
+    "copy-webpack-plugin": "^4.0.1",
+    "css-loader": "^0.28.0",
+    "eslint": "^4.15.0",
+    "eslint-config-airbnb-base": "^11.3.0",
+    "eslint-friendly-formatter": "^3.0.0",
+    "eslint-import-resolver-webpack": "^0.8.3",
+    "eslint-loader": "^1.7.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-vue": "^4.0.0",
+    "extract-text-webpack-plugin": "^3.0.0",
+    "file-loader": "^1.1.4",
+    "friendly-errors-webpack-plugin": "^1.6.1",
+    "html-webpack-plugin": "^2.30.1",
+    "jest": "^22.0.4",
+    "jest-serializer-vue": "^0.3.0",
+    "node-notifier": "^5.1.2",
+    "optimize-css-assets-webpack-plugin": "^3.2.0",
+    "ora": "^1.2.0",
+    "portfinder": "^1.0.13",
+    "postcss-import": "^11.0.0",
+    "postcss-loader": "^2.0.8",
+    "postcss-url": "^7.2.1",
+    "rimraf": "^2.6.0",
+    "semver": "^5.3.0",
+    "shelljs": "^0.7.6",
+    "uglifyjs-webpack-plugin": "^1.1.1",
+    "url-loader": "^0.5.8",
+    "vue-jest": "^1.0.2",
+    "vue-loader": "^13.3.0",
+    "vue-style-loader": "^3.0.1",
+    "vue-template-compiler": "^2.5.2",
+    "webpack": "^3.6.0",
+    "webpack-bundle-analyzer": "^2.9.0",
+    "webpack-dev-server": "^2.9.1",
+    "webpack-merge": "^4.1.0"
+  },
+  "engines": {
+    "node": ">= 6.0.0",
+    "npm": ">= 3.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8"
+  ]
+}
+
+
+C programming and construction
+
+Neither C nor C++ is used all that much today for quick user-facing
+  apps - JavaScript, Python, ..., are more common
+They’re mostly intended for building tools that let you build apps.
+  C-Python, Linux kernel, Emacs interpreter, ... are in C.
+  Chromium, Firefox, JavaScript V8 engine, ... are in C++.
+
+“Bootstrap” -- “Pull oneself up by one’s own bootstraps.”
+  -joke from 1900 or so
+  -political joke
+  -how to get stuff started.
+    Program needed to load Linux kernel into RAM.
+    Bootstrapping process to get this to work (CS 111)
+
+Why is (((lisp) so) (popular))?
+  Lisp has its own JSON - it’s written in its own JSON.
+    It’s easy to “meta” in Lisp.
+
+C++ builds an abstraction layer over C (this is the upper level
+   I’ll mostly skip)
+ * Classes and objects - polymorphism, encapsulation, inheritance
+     Data objects can be *abstract* - you don’t know how they’re implemented
+        and you’re not supposed to care
+     Prevents some low-level optimizations, can make debugging harder.
+     You can have classes and objects in C, but you have to do it
+       “by hand”
+ * Namespace control
+      Controls visibility of identifiers.
+      Improve modularity.
+ * Overloading is easy
+      Supports abstraction add(a,b)
+      C has _Generic which is a poor, rarely-used substitute
+ * Exception handling is easy
+     C has primitive exception handling “#include <setjmp.h>” but awkward.
+ * Memory allocation is built-in (‘new’, ‘del’ operators)
+     In C, it’s an add-on with functions (‘malloc’, ‘free’ functions)
+       that are more low-level and error prone because they’re untyped.
+ * More-abstract I/O cin, cout
+     C has <stdio.h>, <unistd.h> which are lower level
+
+C-cured - safe variant of C
+   Impossible to dereference a null pointer, type system prevented it.;
+   Similarly with other problems.
+   Lots of checking, annoying to users.
+
+Software Architecture of a “typical” C environment (C++ is similar)
+  mainstream C environments GNU/Linux, macOS, ...
+  compiling, linking, executing phases
+
+   0. Write your source code (Emacs, vim, notepad, cat)
+         $ cat >foo.c
+     [type your program]
+     ^D
+   1. Preprocessor (.c -> .i)
+          #define NUM_MAX 32767
+      #define GEE(a, b) ((a)*2 + (b))
+      int f (int x) { return GEE(x+9, 5) < NUM_MAX; }
+      ->
+      int f (int x) { return ((x + 9)*2 + (5)) < 32767; }
+
+      #include <stdio.h>
+
+      gcc -E foo.c
+        This can be useful when debugging to see what code is fed
+    to the compiler proper.
+
+         Steve Bourne did this in the original /bin/sh (Bourne shell):
+          #define IF if (
+      #define THEN ) {
+      #define ELSE } else {
+      #define FI }
+
+         int main (void) {
+        IF 10 < 20
+        THEN
+           print("a");
+           print("b");
+        ELSE
+           print("c"); print("d");
+        FI
+     }
+
+
+         if (i < 32767) ...
+     if (j < 32768) ...
+
+
+     x.c:
+       int const NUM_MAX = 32767;
+     y.c:
+       extern int const NUM_MAX;
+       char foo[NUM_MAX];
+
+       gcc -E foo.c >foo.i  # -E = preprocessor only
+
+   2. Compiler itself (the complicated part) (.i -> .s)
+
+       gcc -S foo.i   # -S = generate assembly language (CS 33)
+
+   3. Assembler (.s -> .o)
+       gcc -c foo.s
+        generates incomplete machine code
+    Ours is just the function f
+      No way to call it
+
+    4. Linker (.o + .o + .o + ... -> a.out)
+         gcc -c main.c
+     gcc main.o foo.o -o a.out
+     This is static linking main.o and foo.o into the executable.
+     It’s also dynamically linking the C library.
+
+    5. Loader
+         built into the kernel
+     takes an executable, copies it into RAM, executes it.
+
+    6. Operating system kernel
+         Linux kernel is written in C.
+     It doesn’t have a ‘main’.
+     Your program “talks” to the kernel via *system calls*.
+       They look like ordinary function calls, but they’re implemented
+       differently.
+     Ordinary call:
+          cos(3.5) executed directly via machine code (.s is textual repr)
+     System call:
+          _exit(29); // OS executes this on behalf of your process
+              slower to get into the OS than to do an ordinary call
+          The OS can do things that user code can’t.
+             It can talk to devices directly.
+             It can fool with the hardware clock, say.
+             Security-relevant
+
+    7. Other stuff (aside from the mainline)
+       7a. Operations maintenance tools
+         SEASnet ops staff uses these
+       ps, top, df, .etc.
+       7b. Developer tools for debugging, refactoring, performance, ...
+           time
+       strace, ltrace (trace system or library calls)
+       valgrind (check for common memory access errors)
+       gdb (“debugger” - program execution exploration)
+
+As an aside: software construction philosophy;
+  Software Tools
+    Don’t have one big program that knows everything
+      * Don’t use Emacs
+      * Don’t use Chromium
+    Instead, break your problem into little problems
+    Solve each one separately
+    Use generic tools to solve each little problem.
+    Hook them together with shell (or something similar).
+
+    gcc command is like a shell
+      invokes preprocessor, assembler, etc. for you
+      each component is relatively simple
+    Divide and conquer as a fundamental strategy.
+
+1. How does a compiler work?
+2. What can you do with a compiler? What’s it good for?
+
+Two major free compilers:
+  GCC - GNU/Linux etc.
+  Clang - macOS, iOS
+Other compilers too:
+  ICC - Intel
+  NVCC - NVidia
+  Oracle Developer Studio
+  ....
+
+Compiler portability
+  *compiler* portability vs *target* portability
+    When you’re building GCC:
+      (Aside: GCC is written in C++. It’s a C++/C/Ada/... compiler.
+       It’s most commonly built by compiling itself!)
+     - target: machine that GCC will produce code for
+     - build: machine that you’re compiling GCC on
+     - host: machine that the GCC you’re building will run on
+  GCC targets:
+    16-, 32-, 64-bit machines
+      (width of pointers)
+    8-, 16-, 32-bit ‘char’
+      8-bit ‘char’ is most common
+    address space
+      flat address space: any pointer can point to any object
+        all memory is one huge array
+      segmented address space: pointers have “flavors”
+    wide variety of oddball machines
+ Supporting all these targets directly would be a pain.
+    x86codegen.c
+    x86-64codegen.c, ...
+    dozens of these, with a lot of repetition
+ “Machine description file” *.md (GCC is somewhat agnostic about target machine)
+   Text file that describes a machine’s instructions in a high-level.
+      “This machine has an addql insn, here are the operands, result,
+         constraints, it does 64-bit integer addition.”
+   Now just have one codegen.c that uses description for you machine
+     to generate code for it.
+   Part of the machine description file also gives ABI for target
+     ABI = Application Binary Interface
+       “On this machine, ‘long’ is 32 bits.”
+       “On this machine, call a function with 2 args by putting
+         the first arg in to %rsi and 2nd into %rdi.”
+       calling conventions
+       How are struct (and in C++, class) laid out in memory.
+  Language Front Ends
+     Each converts source code (.i for C, C++) to internal form
+        in GC, GENERIC form (internal, tree-like memory representation)
+        (language-independent)
+    GENERIC was originally designed for C, C++,
+       but it’s also useful for Java (gcj), Ada, etc.
+
+  GCC Passes
+    “pass” - phase of compilation in which the compiler looks at your
+      whole module (.c file -> .i file -> GENERIC)
+      and makes some decisions to improve performance, find bugs, or whatever.
+
+    1. Parsing: .i source -> GENERIC (in main memory inside GCC)
+    2. Gimplification (GCC-specific)
+          GENERIC -> GIMPLE
+        simple representation that’s closer to machine code
+        GENERIC is trees corresponding to syntax
+        GIMPLE three address representation,
+          each node in the tree looks something like:
+             ADD (A, B, C)
+          “add A to B, put result into C”.
+          A, B, and C are in GIMPLE too
+        leaves of GIMPLE tree are constants, registers, unnamed temporaries
+    3. Tree SSA (Single Static Assignment) passes
+          Rewrite the GIMPLE tree into an even simpler form.
+      Every “variable” is assigned to exactly once.
+      lets you: find when variables are set and used
+      warn about uninitialized variables
+      many other optimizations (remove “dead code” that cannot be executed)
+    4. Interprocedural optimization passes
+         All the functions (within a .c file) together, and how they interact
+       function inlining (replace fn call with fn body)
+     whole-program optimization - look at all the .o files together
+       This needs to wait until you do linking.
+       gcc -flto LTO (link time optimization)
+       Expensive to compile (sacrificing compile time to get runtime
+         performance)
+    5. Register Transfer Language (RTL) passes
+        low-level machine description, where we know about hardware registers
+    Assigns temporaries to registers (or to memory on the stack)
+    Output assembly code, at the end.
+
+What GCC (and other other compilers) is good for.
+
+   Security improvement
+   Performance improvement
+   Static checking
+   Runtime checking
+   Portability checking
+
+For next time. Look for the keywords in this section, in the GCC manual.
+
+
+What compilers are good for, besides compiling your program into machine code.
+
+Security improvement
+Performance improvement
+Static checking
+Dynamic checking (arrange for this)
+Portability checking
+
+We’ll talk about GCC and C/C++, but this happens everywhere
+
+Security improvement
+
+  Assume you have adversaries trying to break into your program.
+    Run it in strange ways.
+    Giving it strange inputs (e.g., attacks on browsers)
+  -fstack-protector option of GCC
+    slows down execution a bit
+    GCC generates extra code when function starts (sets up canary)
+    GCC generates a sanity check when functions return (checks the canary)
+      It’s done for functions that look vulnerable (to speed up performance)
+        - It has a local array (+ more heuristics)
+    Now the default in many implementations (including Ubuntu)
+  ...
+
+Performance improvement
+
+  Compiler flags
+
+  -O “optimize” the program
+    The compiler spends more time to “think” about how to generate
+      more-efficient code.
+  -O2, -O3, -O4
+     Spend even *more* time.....  (-O2 is a reasonable default)
+  -O0
+     Spend even *less* time
+  ...
+
+   They make GCC generate *different* code.
+   This can change the behavior of your program (ususally only subtly).
+     So it can “fix” or “cause” a bug!
+     This means your program has a bug (almost surely), but the bug
+       is triggered only by conditions under (say) -O2.
+   This problem occurs not with -O, but also with -fstack-protector, etc.
+   Changing GCC options is a bit like changing your platform
+     (switch from Linux to FreeBSD -- it can shake out bugs).
+
+                       2**31 - 1
+         for (int i = INT_MAX - 5; i <= INT_MAX; i++)
+       printf ("%d\n", i);
+     2**31 - 5
+     2**31 - 4
+     2**31 - 3
+     2**31 - 2
+     2**31 - 1
+    -2**31
+    -2**31 + 1
+     ...
+
+    gcc -O treats it like this:
+         printf ("%d\n", 2**31 - 5);
+         printf ("%d\n", 2**31 - 4);
+         printf ("%d\n", 2**31 - 3);
+         printf ("%d\n", 2**31 - 2);
+         printf ("%d\n", 2**31 - 1);
+
+   Change the source code directly by using directives to GCC.
+
+        __builtin_unreachable ()
+
+           When you call this function, there’s no code to execute (!)
+       It’s not really a function at all!
+       It’s directive from the programmer to the compiler,
+         saying that this code cannot be reached.
+         It can let the compiler generate more-efficient code.
+
+          int
+      mod16 (int i)
+      {
+        if (i < 0)
+          __builtin_unreachable ();
+        return i % 16;
+      }
+
+              But: -2 % 16 yields -2 because -2/16 is 0!
+
+
+           The compiler can now compile this code as if it were:
+
+          int
+      mod16 (int i)
+      {
+        return i & 15;   // Bitwise AND;   -2 & 15  yields 14.
+      }
+
+      which is more efficient than:
+          int
+      mod16 (int i)
+      {
+        return i % 16;
+      }
+
+    __attribute__ notation of GCC, used for variables, functions, etc.
+
+     __attribute__ for data
+        char c __attribute__ ((aligned (8)));
+      Make c’s address a multiple of 8.
+         ((uintptr_t) (&c)) % 8     yields 0
+        This places C at a “nice” boundary in memory.
+    Alignment can help boost performance.
+    We know our machine accesses memory in 8-byte checks.
+       It’ll cache 8 bytes at a time.
+           If you align carefully, you can make sure your objects
+         fit into a single cache line, instead of multiple.
+
+            union u
+        {
+          struct { int a, b; } s;
+              char c __attribute__ ((aligned (8)));
+        };
+
+
+     __attribute__ for functions.
+
+         // declaration for report_trouble.
+         void report_trouble (int) __attribute__ ((cold));
+
+           “cold” means rarely executed,
+         so compiler can assume that code that calls a cold
+         function is rarely executed.
+
+                  if (! (0 <= n && n < m))
+            report_trouble (27);   // compiler can put this code elsewhere
+          dosomething (n);
+
+                   cmpl %eax, %ebx            // put this in cache!
+           jgu  call_report_trouble
+           call dosomething
+
+                  ....
+           call_report_trouble:        // long ways away
+              movq $27, %rsi           // this code hardly ever gets
+              call report_trouble      // pulled into the cache
+
+         // definition for report_trouble (in some other module)
+     void
+     report_trouble (int troub)
+     {
+       fprintf (stderr, "Trouble! Number %d\n", troub);
+       some other stuff...
+     }
+
+         void commonlyused (int) __attribute__ ((hot)); // function is commonly used
+
+       It’s a bit of a pain to modify your program this way.
+       It requires programmer effort, and the programmer might be wrong.
+
+  Profiling
+     Compile your program in a special way, so that GCC inserts counters
+       that count each time each function is executed.
+     Run it.
+     Gather the resulting counters (a “profile”) as data.
+     Give this profile to GCC, tell it to optimize based on this profile.
+        gcc --coverage (etc.)
+     Your profiling runs should resemble your production runs.
+
+     JavaScript interpreters typically do this automatically
+       dynamically during a run.
+       Just In Time (JIT) compilation
+
+   Link time optimization
+      Ordinarily GCC will inline small functions:
+          int f (int x) { return x + 1; }
+      int v;
+      int g (void) { return f(v); }
+      is optimized as:
+          int f (int x) { return x + 1; }
+      int v;
+          int g (void) { return v + 1; }
+     so long as f and g are in the same .c file.
+     Ordinarily this cannot be done if f and g are in different .c files,
+       because they’re compiled separately.
+     With link-time optimization, when you’re linking separate modules:
+
+        gcc -flto -c foo.c
+    gcc -flto -c bar.c
+        gcc -flto foo.o bar.o -o executable
+
+      -flto tells GCC to use link-time optimization
+         .o files contain not only machine code, but also
+        enough of source code, so that GCC can still
+        do inlining when it links.
+      This can be slow if your program is large.
+      It can be worth it for Chromium etc.
+
+Static checking
+  Catch programming mistakes before execution.
+  No runtime overhead (more efficient).
+  Guarantees that program execution cannot have the error.
+
+ * Modify the program to make a static check.
+
+     void f (long);
+
+     #include <limits.h> // for LONG_MAX
+       #define LONG_MAX 2147483647
+     #include <unistd.h> // defines pid_t and PID_MAX appropriately
+       #define PID_MAX 9223372036854775807 // say, if pid_t is 64 bits.
+
+       pid_t p = fork ();
+       // unistd.h spec says pid_t is a signed integer;
+       // it might be int, short, long...
+       _Static_assert (sizeof (pid_t) <= sizeof (long));
+       _Static_assert (PID_MAX <= LONG_MAX);//PID_MAX and LONG_MAX are constants
+       f (p);
+
+       Without these static asserts, suppose pid_t is wider than ‘long’.
+          long long a = ....;
+      long b = a; // assign low order bits of A to B (typically)
+
+  * Compiler options (so you don’t need to modify your program)
+
+     gcc -Wall   (short for “Warn all”; a misnomer, but it does mean
+                  to turn on a lot of warnings)
+        warning - compiler has noticed bad style, or a probable bug
+             but it’s not sure.
+    -Wall turns on a lot of other warning options
+      -Wcomment
+            /* a comment
+        f(i++);
+        /* another comment */
+      -Wparentheses
+            a << b + c  (means a << (b + c))
+        a && b || c (means (a && b) || c)
+          -Waddress
+            char *p = ... &buf[27] ...;
+        if (p == "abc")   //   if (strcmp (p, "abc") == 0)
+          print (p);
+          -Wmaybe-uninitialized
+            Is there a path through your function that might
+        use a local variable without initializing it?
+        If so, warn.
+
+                   int f (int x)
+           {
+              int y;
+              if (x < 0)
+                 y = x + 1;
+              g (x);
+              if (x <= 0)
+                 h (y);     gives a warning, because x might equal 0
+              return i (x);
+           }
+           -Wstrict-aliasing   // Linux kernel disables this
+           long l = -1;
+           int *p = (int *) &l;
+           *p = 0;
+       ....
+
+   gcc -fanalyzer (new in GCC 10)
+      Like -Wmaybe-uninitialized and similar options, except
+        it’s interprocedural
+        This can be verrry expensive in large programs.
+    (GCC lets you control that expense.)
+
+Runtime checking (= dynamic checking)
+
+   gcc -fsanitize=address
+      catches out-of-range addresses
+        int a[100];    a[i] = 3; // i happens to be 100
+    int *p = NULL; .... *p = 3; ....
+
+   gcc -fsanitize=leak
+      catches memory leaks
+
+  gcc -fsanitize=undefined
+      catches other instances of undefined behavior
+         int i = ...;  return i << j;   // when j == 32
+      catches signed integer overflow
+          return i + j;
+
+  gcc -fsanitize=thread
+      multithreaded race conditions
+
+   Downside: performance
+   Often disable during production.
+
+  Valgrind - useful on production executables.
+    It merely looks at memory access (thread access) of machine code.
+
+
+Next time: GDB
+
+
+
+
+compilers
+debugging
+building
+
+
+last time: runtime checking options
+   gcc -fsanitize=undefined
+     dump core instead doing crazy stuff with undefined behavior
+   They’ll sometime miss bad behavior - for efficiency reasons.
+   They’ll have false alarms.
+
+Portability checking
+  In C/C++ -- ‘long’ is 32 bits on x86, 64 bits on x86-64
+  Any change of platform can cause trouble.
+  “Change in platform” is not just CPU change
+    it’s also a change in the underlying software
+      gcc vs clang vs icc vs nvcc vs ...
+        gcc GNU/Linux
+    clang macOS iOS
+    icc Machine Learning libraries running on Intel
+    ...
+
+      gcc -m32 vs -m64
+      gcc -O2 vs gcc -O0
+   Possibilities grow exponentially here.
+   Cannot test all possible combinations, there’s just too many.
+   So, you have to test intelligently.
+
+Portability via cross-building
+  IoT apps, embedded apps.
+  Build on machine A, run on machine B.
+     Machine A contains copy of gcc, gdb, etc.
+     Machine B is too small or too awkward for that
+  “Cross-compiling”    $ arm-gcc
+
+
+Debugging strategies and tactics
+
+First, you’re better off not debugging!
+
+   Debugging is an inefficient way to fix bugs.
+   It can consume more than 50% of developers’ time in extreme caseds.
+   Doing it more efficiently will give you a leg up.
+     * Prevent bugs from coming up in the first place.
+     * Make bugs easier to find and fix, when they do happen.
+
+Methods for preventing/catching bugs before user sees them
+
+  Static checking
+    gcc -Wall
+    git diff (compare to previous, non-buggy version)
+
+  Dynamic checking
+    gcc -fsanitize=...
+    profiling (to see which code got executed by tests)
+      gcc -pg foo.c
+      gcc (other options)
+    ./a.out  The program runs, as a side effect it generates gmon.out.
+      gprof a.out gmon.out
+        generates a textual representation of the profile
+      subxyz  100031
+      ...
+
+
+  Test cases
+    When you change your program
+      - re-run existing tests
+      - add tests for this particular change
+
+  Use a better platform
+    C/C++ is a bad choice for catching bugs, historically.
+    JavaScript, Python do better dynamic checking (subscript errors)
+    Java, ML, ... do better static AND dynamic checking
+
+  Defensive programming
+    Traces and logs
+       fprintf (stderr, "Garbage collected %d items\n",  nitems);
+       in your source code (for more-specialized needs)
+       automatically with tools like strace
+       “Put in print statements.” - sounds very low-tech
+    Checkpoint/restart
+       Save your state periodically as you compute
+       If you crash, you can restart from most recent saved state.
+         I just did that with ’#notes.txt#’.
+    Assertions
+        #include <assert.h>
+
+        int f (int x)
+    {
+      assert (0 < x && x < 1000);  // no-op in production
+                                   // Compile with -DNDEBUG?
+                       // if (! (0 < x && x < 1000)) abort ();
+      a[x];
+    }
+
+     Exception handling
+        try { dangerous (); } catch (Exception c) { fixup code () }
+
+     Software barricades
+
+     Interpreters
+       Program that executes another program
+         This is software that “pretends” to be hardware;
+     but it can do extra checking.
+
+       Used in browsers to execute JavaScript
+       Java is traditionally executed this way
+       Used to implement sandboxes protect the rest of your system
+         from the JavaScript code
+
+     Virtual Machines
+       Hardware help for building interpreters at the machine-code level.
+       VM monitors behavior of program and intervenes when it does
+         something “suspicious”
+
+Suppose none of this worked, and your program is still buggy, now what?
+
+How to debug
+
+  * Don’t guess at random.  It’s horribly inefficient!
+      Problem space grows exponentially.
+
+  * A more-systematic approach.
+      - Stabilize the failure (come up with a *reproducible* test case).
+            “phase of the moon” bugs
+      - Locate the failure’s source. Be careful of “workarounds”
+              a[i] where i is out of range
+          (0 <= i && i < 100 ? a[i] : -1) “fixes” the bug
+    A lot of times you won’t need a debugger here; you’re better off
+      if you don’t need it.
+
+Debuggers and how they work.
+  * Your program runs in a sandbox or protected environment.
+       It runs at full hardware speed as long as it’s not doing
+         anything “suspicious”.
+       The debugger takes over on “suspicious” operations.
+       It can stop and resume your program.
+       It can change your program’s data.
+       It can change your machine registers, in particular
+         it change the instruction pointer (ip),
+     i.e., it can cause your program to execute code it otherwise would not.
+
+Essentially a debugger is a program mutator: modified version of the program
+that makes it easier for you to figure out the problem
+
+Getting started with GDB
+
+   * It helps to compile with gcc -g (I use -g3)
+      This tells the compiler to generate more metainformation int
+      a.out (no change to executing code, just symtab etc.)
+   * The more your program is optimized, the harder it is for
+      GDB to make sense of your program
+
+      int q, r, n, d; ...
+          q = n / d;
+      r = n % d;
+             One machine insn does both!
+          q = n / d;
+      a = b + 1;  at machine level, insn might be in a different order
+          GDB will “single step” by “jumping around”
+
+      gcc -Og designed for debugging; “optimize so long as it’s still easy
+          to debug”
+
+Typically GDB operates under an IDE (Integrated Development ENvironment) IDE
+such as Emacs (M-x gdb) (M-x gud-gdb)
+
+Some GDB commands
+
+Starting a program
+(gdb) set cwd /tmp -- specifies wd for command when it runs
+(gdb) set env VAR VALUE - sets an environment variable
+(gdb) set disable-randomization off -- (or on)
+            enables or disables ASLR
+        ASLR is Address Space Layout Randomization
+           char *p = malloc(100);
+           char *q = malloc(100);
+            q - p approximately equal to 100
+        because memory allocation is predictable
+        because predictability is a bit faster
+           int f (void) { char buf[100]; g(buf); }
+           int g (char *buf) { char mybuf[100]; mybuf - buf; } e
+
+            Predictability makes buffer overrun attacks easier.
+        ASLR is the default on Ubuntu, RHEL, ...
+
+        It makes for “Heisenbugs” programs will sometimes crash, sometimes
+      not even when given exactly the same input!
+    GDB normally disables ASLR in the executing program
+    to make bugs more reproducible.
+(gdb) r ARGS <INPUT >OUTPUT
+(gdb) start ARGS <INPUT >OUTPUT  - like "r", but breakpoint on "main"
+(gdb) attach PID   - GDB takes control of process with process ID PID
+(gdb) detach
+
+Breakpoints
+
+(gdb) b main
+(gdb) info break
+(gdb) watch i + n   - stop when i+n’s value changes
+
+Continuing and stepping
+(gdb) n (next skips over subroutine)
+(gdb) c (continue)
+(gdb) step (steps into subroutines)
+(gdb) fin (continue until the current subroutine exits)
+(gdb) stepi (single-steps machine insns)
+
+Checkpoints and restarts
+(gdb) checkpoint
+(gdb) restart CHECKPOINT-ID
+
+Reverse execution (requires greater overhead)
+(gdb) rc - like "c", except it executes "backwards"
+
+Examine and change change state
+(gdb) bt - backtrace
+
+
+
+To reproduce:
+Download source code to coreutils.
+tar xf
+cd coreutils-xxx
+diff --git a/src/shuf.c b/src/shuf.c
+index ccfe949d4..dc225bc12 100644
+--- a/src/shuf.c
++++ b/src/shuf.c
+@@ -477,7 +477,7 @@ main (int argc, char **argv)
+         usage (EXIT_FAILURE);
+       }
+
+-  n_operands = argc - optind;
++  n_operands = argc - optind + 1;
+   operand = argv + optind;
+
+   /* Check invalid usage.  */
+./configure
+make CFLAGS='-g3 -Og'
+gdb src/shuf
+
+
+We’ve run out of time, alas
+   Build tools (make)
+   Package management (npm; apt/dpkg; ...)
+
+More for ops than for devs
+
+Wider audience
+  Developers - write and debug programs
+  Builders - build software for various enviroments
+    Debian does this for a wide variety of GNU/Linux distros (Ubuntu)
+  Distributors - arrange for the built software to get to user platforms
+  Installers - Ops staff makes sure your programs are downloaded and
+     installed correctly
+       copy executables into  /usr/bin (etc.)
+  Users
+  Stakeholders who are not users
+  Funders
+
+
+
+GDB session
+
+Current directory is /home/eggert/src/gnu/cu-gnulib/src/
+GNU gdb (Ubuntu 8.1-0ubuntu3.2) 8.1.0.20180409-git
+Copyright (C) 2018 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+<http://www.gnu.org/software/gdb/documentation/>.
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from /home/eggert/src/gnu/cu-gnulib/src/shuf...done.
+(gdb) sed cwd /tmp
+Undefined command: "sed".  Try "help".
+(gdb) set cwd /tmp
+(gdb) set env LC_ALL C
+(gdb) r /etc/passwd
+Starting program: /home/eggert/src/gnu/cu-gnulib/src/shuf /etc/passwd
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555558e01 in quotearg_buffer_restyled (
+    buffer=0x555555763100 <slot0> "'", buffersize=256, arg=0x0,
+    argsize=18446744073709551615, quoting_style=locale_quoting_style,
+    flags=1, quote_these_too=0x555555763048 <quote_quoting_options+8>,
+    left_quote=0x55555555fee7 "'", right_quote=0x55555555fee7 "'")
+    at lib/quotearg.c:393
+(gdb) b main
+Breakpoint 1 at 0x555555556b65: file src/shuf.c, line 373.
+(gdb) r
+The program being debugged has been started already.
+Start it from the beginning? (y or n) y
+Starting program: /home/eggert/src/gnu/cu-gnulib/src/shuf /etc/passwd
+
+Breakpoint 1, main (argc=2, argv=0x7fffffffe3b8) at src/shuf.c:373
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb) n
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb)
+(gdb) info break
+Num     Type           Disp Enb Address            What
+1       breakpoint     keep y   0x0000555555556b65 in main at src/shuf.c:373
+    breakpoint already hit 1 time
+(gdb) bt  (short for "backtrace")
+#0  main (argc=2, argv=0x7fffffffe3b8) at src/shuf.c:489
+(gdb) c
+Continuing.
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000555555558e01 in quotearg_buffer_restyled (
+    buffer=0x555555763100 <slot0> "'", buffersize=256, arg=0x0,
+    argsize=18446744073709551615, quoting_style=locale_quoting_style,
+    flags=1, quote_these_too=0x555555763048 <quote_quoting_options+8>,
+    left_quote=0x55555555fee7 "'", right_quote=0x55555555fee7 "'")
+    at lib/quotearg.c:393
+(gdb) bt
+#0  0x0000555555558e01 in quotearg_buffer_restyled (
+    buffer=0x555555763100 <slot0> "'", buffersize=256, arg=0x0,
+    argsize=18446744073709551615, quoting_style=locale_quoting_style,
+    flags=1, quote_these_too=0x555555763048 <quote_quoting_options+8>,
+    left_quote=0x55555555fee7 "'", right_quote=0x55555555fee7 "'")
+    at lib/quotearg.c:393
+#1  0x0000555555559441 in quotearg_n_options (n=0, arg=0x0,
+    argsize=18446744073709551615,
+    options=0x555555763040 <quote_quoting_options>) at lib/quotearg.c:900
+#2  0x0000555555559a43 in quote_n_mem (n=0, arg=0x0,
+    argsize=18446744073709551615) at lib/quotearg.c:1056
+#3  0x0000555555559a93 in quote_n (n=0, arg=0x0) at lib/quotearg.c:1068
+#4  0x0000555555559ab2 in quote (arg=0x0) at lib/quotearg.c:1074
+#5  0x0000555555557144 in main (argc=2, argv=0x7fffffffe3b8) at src/shuf.c:491
+(gdb) up
+#1  0x0000555555559441 in quotearg_n_options (n=0, arg=0x0,
+    argsize=18446744073709551615,
+    options=0x555555763040 <quote_quoting_options>) at lib/quotearg.c:900
+(gdb) down
+#0  0x0000555555558e01 in quotearg_buffer_restyled (
+    buffer=0x555555763100 <slot0> "'", buffersize=256, arg=0x0,
+    argsize=18446744073709551615, quoting_style=locale_quoting_style,
+    flags=1, quote_these_too=0x555555763048 <quote_quoting_options+8>,
+    left_quote=0x55555555fee7 "'", right_quote=0x55555555fee7 "'")
+    at lib/quotearg.c:393
+(gdb) up
+#1  0x0000555555559441 in quotearg_n_options (n=0, arg=0x0,
+    argsize=18446744073709551615,
+    options=0x555555763040 <quote_quoting_options>) at lib/quotearg.c:900
+(gdb) p val
+$1 = 0x555555763100 <slot0> "'"
+(gdb) p argsize
+$2 = 18446744073709551615
+(gdb) p/x argsize
+$3 = 0xffffffffffffffff
+(gdb) p printf("%d\n", (int)(val % 30))
+Argument to arithmetic operation not a number or boolean.
+(gdb) p val
+$4 = 0x555555763100 <slot0> "'"
+(gdb) p printf("%d\n", (int)(argsize % 30))
+15
+$5 = 3
+(gdb) p val = ""
+$6 = 0x7ffff7fd2f80 ""
+(gdb)
